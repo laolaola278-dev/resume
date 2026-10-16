@@ -8,7 +8,7 @@ const projects = [
 	{ id: "skillc", name: "skillc", tag: "Skill 工程", verified: "runtime" },
 	{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链", verified: "runtime" },
 	{ id: "clihive", name: "clihive", tag: "Agent 协作", verified: "screenshots" },
-	{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏", verified: "code" },
+	{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏", verified: "runtime" },
 	{ id: "doubao-wplus", name: "Doubao WPlus", tag: "浏览器 AI 工作台", verified: "fork" },
 	{ id: "railmind", name: "RailMind", tag: "数据 + ML", verified: "code" },
 	{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排", verified: "code" },
@@ -975,8 +975,8 @@ npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
 <div class="text-sm opacity-70 mb-3">
 从团队 git 历史蒸馏 Agent Skills —— 让新 Agent 像资深员工一样上手
 </div>
-<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
-{badge.code.text}
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.runtime.cls}`}>
+{badge.runtime.text}
 </div>
 <p class="mb-4">
 <a href="https://github.com/laolaola278-dev/crew-skill" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/crew-skill</a>
@@ -1005,6 +1005,88 @@ npx crew-skill check . --agent   # 上岗考试 + 成绩单
 <li><strong><code>distill-git</code></strong> —— 扫描 git 历史、给 commit 分类，产出 5 份 SKILL.md：<code>naming</code>（命名）、<code>review</code>（评审关注点）、<code>testing</code>（测试习惯）、<code>runbook</code>（部署手册）、<code>gotchas</code>（坑）</li>
 <li><strong><code>check</code></strong> —— 生成上岗考试题并打分，输出成绩单（<code>.md</code> + <code>.html</code>）</li>
 </ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">✅ 实机运行记录</h3>
+<p class="text-sm opacity-85 mb-3">
+我在隔离环境中安装依赖、完成构建，并对一个真实的 16-commit 仓库（<code>agentos</code>）跑通了
+<strong>蒸馏 → 考试</strong>两步。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">① 蒸馏（<code>distill-git</code>）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`crew-skill · distill-git · agentos-full
+scanned 16 commits  ·  wrote 5 skills → .crew/skills/
+time split: T=2026-06-25 (auto, latest-90d)  ·  0 training + 16 exam-window commits
+  naming.md      3 rules · Naming Conventions
+  review.md      1 rule · Review Focus
+  testing.md     3 rules · Testing
+  runbook.md     1 rule · Runbook / Deploy
+  gotchas.md     1 rule · Gotchas
+  dropped 1 rule (no evidence)
+
+PR reviews: skipped — default is 100% local
+  (re-run with --with-pr to fetch GitHub review comments)`}</code></pre>
+</div>
+<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm opacity-85">
+<strong><code>dropped 1 rule (no evidence)</code> 这一行是关键。</strong>
+它证明「无证据的规则会被丢弃、且丢弃数如实报告」不是文档措辞，而是<strong>真实执行到的代码路径</strong>。
+同时 <code>PR reviews: skipped — default is 100% local</code> 也印证了隐私设计：默认绝不联网。
+</div>
+
+<h4 class="font-bold mt-4 mb-2">② 生成的规则长什么样（<code>naming.md</code> 实测产出）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`## Rules
+1. **16/16 conventional commits (last 16 commits,
+   regex ^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|merge|release)...).**
+   — Evidence: daaa216 "feat(agentos): close parity gaps in search, context, subagents..."
+2. **Preferred commit types: feat 11, chore 2, fix 2, docs 1.**
+   — Evidence: 7bbcb0b "feat(dashboard): web approval gate + conversational /chat page"
+3. **File naming: kebab-case (10%) (120 source-like files: kebab 12, snake 1, camel 0).**
+   — Evidence: src/app/components/approval-toaster.tsx
+
+## Anti-patterns (real)
+- (none found in the scanned window — absence is not proof;
+   verify the relevant commands yourself)`}</code></pre>
+</div>
+<p class="text-sm opacity-85 mb-4">
+每条规则都挂着<strong>真实 commit 哈希或文件路径</strong>。另一份 <code>testing.md</code> 里甚至精确到了
+<strong>文件行号</strong>：<code>Mocking/stubbing is used in tests (e.g. tests/integration/agentic.test.ts:5)</code>。
+更值得说的是最后那句自我限定——<code>absence is not proof</code>（没有找到反例，不等于不存在反例），
+以及页脚的 <code>heuristic, not AI — verify before acting</code>。
+它明确告诉使用者这是启发式规则而非 AI 推理，行动前请自行验证。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">③ 上岗考试（<code>check --agent</code>）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`┌─────────────────────────────────────┐
+│ CREW CHECK · onboarding exam        │
+│ repo: agentos-full  (skills loaded) │
+│                                     │
+│ SCORE 40 / 100                      │
+│ naming  ●●●●● 19/20                 │
+│ process ●●●○○ 10/20                 │
+│ deploy  ●○○○○  4/20                 │
+│ gotchas ●●○○○  7/20                 │
+│ docs    ○○○○○  0/20                 │
+│                                     │
+│ verdict: not ready                  │
+└─────────────────────────────────────┘
+weakest area: docs (0/20)`}</code></pre>
+</div>
+<div class="border-l-4 border-amber-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm opacity-85">
+<strong>如实说明：我跑出来是 40/100，低于项目 README 声称的 67/100。</strong>
+<p class="mt-2">
+原因不神秘：README 的 67/100 是在 <code>pi</code> 仓库（<strong>300 commits</strong>）上测得，
+而我用的是 agentos（<strong>16 commits</strong>），且本次时间切分结果为
+<code>0 training + 16 exam-window commits</code>——<strong>训练窗口内没有 commit</strong>，可蒸馏的素材本就少得多。
+两者测的不是同一件事，不构成矛盾。
+</p>
+<p class="mt-2">
+但我觉得这个"难看的结果"反而更值得放上来：工具面对素材不足的情况，
+诚实给出了 <code>verdict: not ready</code> 和 40 分，<strong>而不是为了好看去凑一个高分</strong>。
+这比复现一个漂亮数字更能说明它的可信度。
+</p>
+</div>
 
 <h3 class="text-lg font-bold mt-6 mb-2">⭐ 两条我认为最值得说的设计</h3>
 
