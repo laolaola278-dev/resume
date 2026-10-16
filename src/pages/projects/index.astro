@@ -4,11 +4,11 @@ import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 
 const projects = [
-	{ id: "clihive", name: "clihive", tag: "Agent 协作", verified: "screenshots" },
-	{ id: "agentos", name: "AgentOS", tag: "Agent 运行时", verified: "code" },
-	{ id: "railmind", name: "RailMind", tag: "数据 + ML", verified: "code" },
-	{ id: "skillc", name: "skillc", tag: "Skill 工程", verified: "code" },
+	{ id: "agentos", name: "AgentOS", tag: "Agent 运行时", verified: "runtime" },
+	{ id: "skillc", name: "skillc", tag: "Skill 工程", verified: "runtime" },
 	{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链", verified: "runtime" },
+	{ id: "clihive", name: "clihive", tag: "Agent 协作", verified: "screenshots" },
+	{ id: "railmind", name: "RailMind", tag: "数据 + ML", verified: "code" },
 	{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排", verified: "code" },
 ];
 
@@ -268,6 +268,160 @@ agentos secrets delete LLM_API_KEY`}</code></pre>
 有 Key 时由 OpenAI 兼容模型自由规划、提出修复并额外执行独立评审。
 <strong>两种模式下，任务都只能凭客观证据（验证命令 + 评审员 PASS）完成</strong>——这是贯穿全项目的设计红线。
 </p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">✅ 实机运行记录</h3>
+<p class="text-sm opacity-85 mb-3">
+我在隔离环境中安装依赖、初始化工作区，并在<strong>无 LLM Key 的确定性模式下</strong>真实跑通了任务全流程。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">① 环境自检（<code>agentos doctor</code>，12 项全通过）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`Initialised /tmp/agentos-demo/.agentos (store: sqlite)
+
+✓ node         node 22.22.3
+✓ dataDir      /tmp/agentos-demo/.agentos writable
+✓ persistence  sqlite store, 0 events, 0 tasks
+✓ git          rootDir is not a git repository (git tool still available)
+✓ shell        GNU bash, version 5.2.15(1)-release
+✓ model        no LLM configured — deterministic planner only
+✓ sandbox      none (policy + workspace guard only)
+✓ secrets      no vault (.agentos/secrets.json absent)
+✓ hooks        no hooks configured
+✓ mcp          no MCP servers configured
+✓ interrupted  no interrupted tasks
+✓ eventBus     seq=0 pending=0 dropped=0 persistErrors=0
+All checks passed`}</code></pre>
+</div>
+<p class="text-sm opacity-80 mb-4">
+注意 <code>✓ model  no LLM configured — deterministic planner only</code> 这一行——
+它印证了「无 Key 时优雅降级」的设计：环境自检明确告知当前处于确定性规划模式，而不是报错退出。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">② 真实工具注册表与 Agent 角色（<code>tools list</code> / <code>agent list</code>）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`filesystem — Sandboxed filesystem access limited to the task workdir
+    read / write / append / edit / apply_patch / delete / move / copy
+    list / search / mkdir / stat / exists
+terminal — Run shell commands (bash) inside the task workdir
+    execute(command, cwd?, timeoutMs?, input?, maxOutputBytes?, env?)
+    start / poll / stop
+process — Inspect and control background processes started by this runtime
+    (never arbitrary PIDs)
+    list / kill / wait / output
+git — Safe git operations (no shell, no force-push, no history rewriting)
+    status / diff / log / branch / checkout / add / commit / stash
+    init / rev_parse / state / worktree_add / worktree_remove / merge
+
+planner     规划：把任务规格转成可执行步骤计划 (spec → DSL → model)
+researcher  检查工作区：文件、包脚本、git 状态、建议的验证方式
+executor    通过工具运行时执行步骤，带预算、重试与检查点
+tester      运行验证引擎（测试/lint/typecheck/build/自定义）并记录证据
+reviewer    独立评审：需求、实现、测试、安全、边界、架构、回归
+debugger    诊断失败、归类根因、提出修复步骤或判定终态失败
+integrator  合并隔离 worktree 结果；冲突时回滚`}</code></pre>
+</div>
+
+<h4 class="font-bold mt-4 mb-2">③ 成功路径：四个 Agent 角色接力</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`task.queued        {"status":"QUEUED"}
+task.started       {"attempt":0,"phase":"PLANNING"}
+planner   agent.started / task.planned  {"source":"spec","steps":1}
+executor  agent.tool_call filesystem → tool.completed filesystem 3ms
+task.verifying     {"from":"EXECUTING"}
+tester    test.started  verification  {"command":"test -f src/health.txt"}
+tester    test.passed   verification  {"exitCode":0}
+task.reviewing     {"from":"VERIFYING"}
+reviewer  review.completed  {"verdict":"PASS","issues":[]}
+task.completed     {"steps":1,"toolCalls":2}
+
+task_mvaz9jcv_a4610aec  COMPLETED  p0  写入健康检查端点文件
+completed: review PASS with verification evidence`}</code></pre>
+</div>
+
+<h4 class="font-bold mt-4 mb-2">④ 对照实验：验证闸门是不是摆设？</h4>
+<p class="text-sm opacity-85 mb-3">
+我故意让验证命令指向一个<strong>永远不会被创建的文件</strong>，
+看程序敢不敢因为「执行步骤成功了」就判 COMPLETED。
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`executor  tool.completed  filesystem 4ms        ← 写文件这一步其实成功了
+task.verifying     {"from":"EXECUTING"}
+tester    test.failed  verification  ✗ exit=1   ← 验证命令真实执行并失败
+task.fixing        {"from":"VERIFYING"}
+debugger  task.diagnosed  {"category":"verification","retryable":false,
+                           "rootCause":"verification failed: verify-1 exit=1"}
+task.failed  ✗ UNRECOVERABLE: verification failed: verify-1 exit=1
+
+task_mvaza5yz_232fa1a7  FAILED  p0  验证故意失败的任务`}</code></pre>
+</div>
+<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm opacity-85">
+<strong>结论：闸门是真的。</strong>执行器写文件成功了，但验证命令退出码为 1，
+程序直接判 <code>FAILED</code> 并进入 FIXING 让 debugger 诊断，
+<strong>根本没有进入 REVIEWING 阶段</strong>——没给「评审」发生的机会。
+这正是「任务只能凭客观证据完成，模型无法自证」的硬实现，与 README 的主张完全一致。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">重点代码：验证闸门的实现</h3>
+<p class="text-sm opacity-85 mb-3">
+上述行为对应的源码在 <code>src/agentos/orchestrator.ts</code>。
+阶段状态机（源码注释原文）：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`PLANNING → EXECUTING → VERIFYING → (FIXING → VERIFYING)* → REVIEWING → COMPLETED
+
+const PHASE_PROGRESS = { PLANNING: 5, EXECUTING: 20, VERIFYING: 70,
+                         FIXING: 75, REVIEWING: 90, COMPLETED: 100 };`}</code></pre>
+</div>
+<p class="text-sm opacity-85 mb-3">
+VERIFYING 阶段——验证<strong>全部</strong>通过才放行到 REVIEWING，否则转入 FIXING：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`case "VERIFYING": {
+  cp.verification = (await runAgent(tester, ctx(), undefined)).output;
+  await save();
+  if (cp.verification.every((v) => v.passed)
+      && (cp.acceptance ?? []).every((a) => a.passed)) {
+    await setPhase("REVIEWING");
+  } else {
+    pendingFailure = cp.verification.some((v) => !v.passed)
+      ? { kind: "verification", results: cp.verification }
+      : { kind: "acceptance", results: cp.acceptance ?? [] };
+    await setPhase("FIXING");
+  }
+  break;
+}`}</code></pre>
+</div>
+<p class="text-sm opacity-85 mb-3">
+REVIEWING 阶段——只有独立评审员给出 PASS，且在隔离 worktree 下合并成功，才算真正完成：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`case "REVIEWING": {
+  cp.review = (await runAgent(reviewer, ctx(), {
+    plan, stepResults: cp.completedSteps,
+    verification: cp.verification, acceptance: cp.acceptance ?? []
+  })).output;
+  await save();
+  if (cp.review.verdict === "PASS") {
+    if (cp.worktree) {
+      const res = (await runAgent(integrator, ctx(), { worktree: cp.worktree, ... })).output;
+      if (!res.merged) throw new AgentOSError("MERGE_CONFLICT",
+        "integration failed: merge conflict (rolled back)", { details: res.conflicts });
+      cp.worktree = undefined;
+    }
+    await setPhase("COMPLETED");
+    break;
+  }
+  pendingFailure = { kind: "review", review: cp.review };
+  await setPhase("FIXING");
+  break;
+}`}</code></pre>
+</div>
+<p class="text-sm opacity-80 mb-4">
+这两段代码与上面 ④ 的对照实验输出<strong>逐行对应</strong>：
+验证失败 → <code>setPhase("FIXING")</code>（日志里的 <code>task.fixing</code> + debugger 诊断）；
+评审 PASS → <code>setPhase("COMPLETED")</code>（日志里的 <code>task.completed</code>）。
+代码与运行行为一致，不是文档自述。
+</p>
 </section>
 
 <!-- ============ RailMind ============ -->
@@ -490,6 +644,114 @@ skillc unpack  out.skillpack -o ./dir              # 反向导入回源码`}</co
 <p class="text-sm opacity-85 mb-4">
 <strong>自述验证状态：</strong>16/16 测试通过；通过 <code>npm link</code> 提供全局 CLI（任意目录可用）；
 已在 Codex / Claude Code / Hermes / OpenClaw 上做真实运行时验证（见 <code>docs/TRIAL-*.md</code>）。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">✅ 实机运行记录</h3>
+
+<h4 class="font-bold mt-4 mb-2">① 编译：一份源码 → 4 个目标，21 个文件</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`skillc build — deploy-qm@0.2.0 (ir 985f896daaf3016b)
+  · [claude-code] .claude/skills/deploy-qm/SKILL.md (standalone)
+  · [claude-code] .claude/skills/deploy-qm/tools/example-tool/tool.json
+  · [claude-code] .claude/skills/deploy-qm/deployment.md
+  · [claude-code] .claude/skills/deploy-qm/references/fly.md
+  · [claude-code] .claude/skills/deploy-qm/references/aws.md
+! [codex] "web-fetch" is not native on codex — the emitted text tells
+          the agent to ask the user to paste fetched content
+  · [codex] .codex/skills/deploy-qm/SKILL.md (standalone)
+  · [codex] .codex/skills/deploy-qm/tools/example-tool/tool.json
+  · [codex] AGENTS.md (injection)          ← 仅 codex 需要注入式产物
+  · [codex] .codex/skills/deploy-qm/deployment.md
+  · [dsh]    .dsh/skills/deploy-qm/...     (5 files)
+  · [hermes] .hermes/skills/deploy-qm/...  (5 files)
+ok 21 file(s) across 4 target(s) -> .skillc/plan.json`}</code></pre>
+</div>
+<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm opacity-85">
+<strong>我从产物里挖到的两个硬证据，证明它真的是「编译」而不是「复制」：</strong>
+<ul class="list-disc pl-5 mt-2 space-y-1">
+<li><strong>codex 目标额外产出了 <code>AGENTS.md (injection)</code></strong>，而其他三个目标全是 standalone 文件——产物结构本身就不同</li>
+<li>plan.json 里同一个 SKILL.md 的哈希值<strong>各不相同</strong>：
+claude-code 是 <code>c5723df45b835fce</code>，codex 是 <code>34698be136514253</code>。
+<strong>如果只是复制文件，哈希不可能不同。</strong></li>
+</ul>
+</div>
+
+<h4 class="font-bold mt-4 mb-2">② 首次同步：写入 21 个文件并生成 lockfile</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`+ [hermes] .hermes/skills/deploy-qm/deployment.md
++ [hermes] .hermes/skills/deploy-qm/references/fly.md
++ [hermes] .hermes/skills/deploy-qm/references/aws.md
+  wrote 5 file(s) for claude-code
+  wrote 6 file(s) for codex
+  wrote 5 file(s) for dsh
+  wrote 5 file(s) for hermes
+ok sync complete; lockfile -> .skillc/lock.json`}</code></pre>
+</div>
+
+<h4 class="font-bold mt-4 mb-2">③ 关键测试：手工改动会不会被覆盖？</h4>
+<p class="text-sm opacity-85 mb-3">
+这是 skillc 最核心的承诺。我的做法是：往刚生成的 <code>SKILL.md</code> 里<strong>手工追加一行注释</strong>，
+然后再次执行 <code>sync --write</code>，看它怎么处理。
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`! [claude-code] .claude/skills/deploy-qm/SKILL.md
+      — changed outside skillc since the last sync; pass --force to overwrite
+= [claude-code] .claude/skills/deploy-qm/tools/example-tool/tool.json
+= [claude-code] .claude/skills/deploy-qm/deployment.md
+= [codex] .codex/skills/deploy-qm/SKILL.md
+= [codex] AGENTS.md
+= [dsh] ...   (5 files unchanged)
+= [hermes] ... (5 files unchanged)
+x refusing to sync: 1 file(s) changed outside skillc
+      — resolve them or pass --force
+
+# 随后检查文件内容：
+$ grep -c "我手工加的一行" .claude/skills/deploy-qm/SKILL.md
+1                          ← 手工修改完好保留，未被覆盖`}</code></pre>
+</div>
+<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm opacity-85">
+<strong>结论：承诺兑现。</strong>它精确识别出「这一个文件被外部改过」并<strong>整体拒绝同步</strong>（<code>x refusing to sync</code>），
+而不是自作主张覆盖用户的修改。其余 20 个文件正确标记为 <code>=</code>（unchanged，幂等跳过）。
+输出前缀语义：<code>+</code> 新建 · <code>=</code> 未变更 · <code>!</code> 外部修改告警 · <code>x</code> 拒绝。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">重点代码：三态哈希比对</h3>
+<p class="text-sm opacity-85 mb-3">
+上面「拒绝覆盖」的判定逻辑在 <code>src/sync.ts</code>。它维护三个哈希：
+<code>current</code>（文件当前内容）、<code>file.content</code>（本次将要写入的内容）、
+<code>last</code>（lockfile 记录的上次写入内容），用三态比对精确区分「skillc 的旧版本」与「用户的手工修改」：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`const current = sha256Text(readFileSync(abs, "utf8"));
+
+// ① 当前内容 == 本次将写入的内容 → 幂等，跳过
+if (current === sha256Text(file.content)) {
+  actions.push({ target, file, kind: "unchanged" });
+  continue;
+}
+
+// ② 当前内容 == lockfile 记录的上次写入 → 是 skillc 自己的旧版本，安全替换
+const last = targetLock[file.path]?.hash;
+if (last && current === last) {
+  actions.push({ target, file, kind: "replace" });
+  continue;
+}
+
+// ③ 两者都对不上 → 用户在 skillc 之外改过，拒绝覆盖（除非 --force）
+if (opts.force) {
+  actions.push({ target, file, kind: "replace",
+    reason: "--force over a file changed outside skillc" });
+  continue;
+}
+actions.push({
+  target, file, kind: "blocked",
+  reason: "changed outside skillc since the last sync; pass --force to overwrite"
+});`}</code></pre>
+</div>
+<p class="text-sm opacity-80 mb-4">
+这个设计的巧妙之处在于：仅比较「当前 vs 新内容」只能判断<em>要不要写</em>，
+却无法判断<em>能不能安全覆盖</em>。引入 lockfile 里记录的第三态后，
+才能把「skillc 自己留下的旧版本」（可安全替换）与「用户手改的内容」（必须保护）区分开。
 </p>
 </section>
 
