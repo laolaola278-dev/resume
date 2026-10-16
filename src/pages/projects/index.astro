@@ -8,6 +8,8 @@ const projects = [
 	{ id: "skillc", name: "skillc", tag: "Skill 工程", verified: "runtime" },
 	{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链", verified: "runtime" },
 	{ id: "clihive", name: "clihive", tag: "Agent 协作", verified: "screenshots" },
+	{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏", verified: "code" },
+	{ id: "doubao-wplus", name: "Doubao WPlus", tag: "浏览器 AI 工作台", verified: "fork" },
 	{ id: "railmind", name: "RailMind", tag: "数据 + ML", verified: "code" },
 	{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排", verified: "code" },
 ];
@@ -16,6 +18,7 @@ const badge = {
 	runtime: { text: "✅ 已实机运行验证", cls: "bg-green-500/15 text-green-400 border-green-500/30" },
 	screenshots: { text: "📷 项目自带真实截图", cls: "bg-sky-500/15 text-sky-400 border-sky-500/30" },
 	code: { text: "🔍 代码审计通过", cls: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
+	fork: { text: "🔧 二次开发（已标注来源）", cls: "bg-purple-500/15 text-purple-400 border-purple-500/30" },
 };
 ---
 
@@ -39,6 +42,7 @@ const badge = {
 <li><strong>✅ 已实机运行验证</strong> —— 由我（构建本站时）在真实环境启动并调用过接口，证据可复现</li>
 <li><strong>📷 项目自带真实截图</strong> —— 项目内附截图，由仓库自带的自动化脚本从真实运行 UI 捕获</li>
 <li><strong>🔍 代码审计通过</strong> —— 代码与文档完整、调用链自洽，但我未在构建环境下实际运行</li>
+<li><strong>🔧 二次开发</strong> —— 基于他人的开源项目改造而来，页面内<strong>明确标注了上游来源与我的具体改动</strong></li>
 </ul>
 <p class="text-sm opacity-85 mt-2">
 我没有为任何项目伪造运行截图。凡无法真实验证的，一律如实标注。
@@ -963,6 +967,165 @@ npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
 独立记忆子系统列入 Phase 9，<strong>透明度原则：不宣称未实现的能力</strong></li>
 </ul>
 </div>
+</section>
+
+<!-- ============ crew-skill ============ -->
+<section id="crew-skill" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">crew-skill</h2>
+<div class="text-sm opacity-70 mb-3">
+从团队 git 历史蒸馏 Agent Skills —— 让新 Agent 像资深员工一样上手
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
+{badge.code.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/crew-skill" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/crew-skill</a>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-85 border-l-4 border-[var(--primary)]">
+<strong>项目自述的动机（原文大意）：</strong>每次有新的 Agent 加入仓库，它总是用错误的方式部署——
+因为部署清单只存在于资深开发的脑子里。命名规范在评审中被反复打回，
+因为这些规范从来没有被写在 Agent 能读到的地方。
+于是我不再写没人看的 wiki，而是让知识<strong>从已有的 git 历史里自己提取出来</strong>，
+直接落到 Agent 真正会去看的位置。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">三步工作流</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`npx crew-skill add .             # 创建 .crew/ 并装入你的 agent skill 目录
+npx crew-skill distill-git .     # 扫描 git 历史 → 5 份有证据支撑的 SKILL.md
+npx crew-skill check . --agent   # 上岗考试 + 成绩单
+
+# 输出：300 commits → 5 skills · 19 rules · 1.86s
+# 全程无账号、无配置、无网络`}</code></pre>
+</div>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong><code>add</code></strong> —— 创建 <code>.crew/</code>，并把 skill loader 装进你的 Agent 技能目录（<code>.claude/skills</code>、<code>.agents/skills</code>、<code>.cursor/skills</code>）</li>
+<li><strong><code>distill-git</code></strong> —— 扫描 git 历史、给 commit 分类，产出 5 份 SKILL.md：<code>naming</code>（命名）、<code>review</code>（评审关注点）、<code>testing</code>（测试习惯）、<code>runbook</code>（部署手册）、<code>gotchas</code>（坑）</li>
+<li><strong><code>check</code></strong> —— 生成上岗考试题并打分，输出成绩单（<code>.md</code> + <code>.html</code>）</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">⭐ 两条我认为最值得说的设计</h3>
+
+<h4 class="font-bold mt-4 mb-2">1. 证据门槛：没有证据的规则，宁可丢掉</h4>
+<p class="opacity-85 mb-4">
+每条被提炼出的规则都必须携带<strong>真实来源</strong>（具体的 commit / 文件）。
+<strong>找不到证据的规则会被直接丢弃，而且丢弃的数量总是被如实报告出来。</strong>
+这一点很罕见——大多数同类工具会想方设法多产出几条规则让结果好看，
+而它选择让「我提炼不出可靠规则」这件事本身可见。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">2. 时间切分：评估不会自欺欺人</h4>
+<p class="opacity-85 mb-4">
+评估方法是：<strong>只用 cutoff 时间 T 之前的 commit 做蒸馏，
+然后用 T 之后的 commit 构建考题</strong>，让全新的 Agent 去答。
+这样就避免了「用训练数据当考题」的泄漏问题。
+项目原文还说了一句：<em>No cherry-picking — ugly numbers published too.</em>（不挑数据，难看的数字也照发。）
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>与我另一个项目的呼应：</strong>这种对「数据泄漏」的敏感，和 RailMind 里识别出 R²=1.0 是假象、
+进而定位 3 个泄漏特征的思路是同一种工程直觉。
+两者都在处理同一个问题：<em>怎么知道一个好看的指标是真的。</em>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">自述基准数据</h3>
+<div class="overflow-x-auto mb-4">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-3">仓库</th><th class="text-left py-2 pr-3">类型</th><th class="text-right py-2 pr-3">Commits</th><th class="text-right py-2 pr-3">Skills·Rules</th><th class="text-right py-2 pr-3">安装前</th><th class="text-right py-2">安装后</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">pi</td><td class="py-2 pr-3">engineering (TS)</td><td class="text-right py-2 pr-3">300</td><td class="text-right py-2 pr-3">5 · 19</td><td class="text-right py-2 pr-3">0/100</td><td class="text-right py-2"><strong>67/100</strong></td></tr>
+<tr><td class="py-2 pr-3">superpowers</td><td class="py-2 pr-3">docs-heavy (MD)</td><td class="text-right py-2 pr-3">681</td><td class="text-right py-2 pr-3">5 · 5</td><td class="text-right py-2 pr-3">0/100</td><td class="text-right py-2"><strong>57/100</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p class="text-sm opacity-80 mb-4">
+第三个仓库（TencentDB-Agent-Memory，中文项目）用于记录中文语料的评测集，项目说明中<strong>未对其发布前后对比数据</strong>，
+只发布前两个仓库的实测数字。用时方面：<code>distill-git</code> 在 300-commit 仓库上 1.86s（3 次计时取中位数，工具自报 0.8s）。
+<em>注：以上为项目自述数据，我未在构建环境中复跑验证。</em>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">隐私与兼容</h3>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong>100% 本地</strong>：全部蒸馏都是在本机跑的确定性启发式规则，无遥测、无分析、无更新检查</li>
+<li><strong>唯一的网络路径默认关闭</strong>：只有 LLM 精修钩子（<code>src/distill/llm.ts</code>）具备联网能力，
+且仅在你主动设置 <code>CREW_LLM_API</code> 时激活——当前里程碑中它是<strong>文档化的空实现（仅接口）</strong></li>
+<li><strong>PR 评审注释按需拉取</strong>：<code>--with-pr</code> 才通过 <code>gh</code> 抓取，不加参数绝不外取</li>
+<li><strong>兼容</strong>：Claude Code（<code>.claude/skills</code>）、AGENTS.md 系（Codex 等，<code>.agents/skills</code>）、Cursor（<code>.cursor/skills</code>），Node.js ≥ 18</li>
+</ul>
+</section>
+
+<!-- ============ doubao-wplus ============ -->
+<section id="doubao-wplus" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">Doubao WPlus</h2>
+<div class="text-sm opacity-70 mb-3">
+多宿主 AI 增强浏览器扩展 —— 把豆包网页版扩展成带记忆、Skill、MCP、自动化的 AI 工作台
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.fork.cls}`}>
+{badge.fork.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/doubao-wplus" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/doubao-wplus</a>
+</p>
+
+<div class="border-l-4 border-purple-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
+<strong>关于项目来源，如实说明：</strong>本项目<strong>不是从零开发</strong>，
+而是基于开源项目 <strong>DeepSeek++</strong>（原作者 zhu1090093659）做的二次开发。
+仓库早期的 77 个提交属于上游 DeepSeek++ 项目（可见 <code>Release DeepSeek++ 0.4.0</code> ~ <code>0.4.3</code> 等提交），
+我在此基础上做了 <strong>16 个提交</strong>，把单宿主的 DeepSeek 插件改造为<strong>多宿主的豆包工作台</strong>。
+<p class="mt-2">
+我核对过提交记录，改造工作包含真实的技术内容，而非简单换品牌名——详见下方「我做的改造」。
+之所以写清楚这一点，是因为<strong>把它说成完全独立开发是不诚实的，但把它藏起来又会低估实际做的工作</strong>。
+</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">⭐ 我做的改造：HostAdapter 多宿主抽象</h3>
+<p class="opacity-85 mb-3 leading-relaxed">
+上游项目是<strong>为 DeepSeek 单宿主写的</strong>，宿主逻辑散落在各处、直接硬编码。
+我做的核心工作是把这部分抽成 <strong>HostAdapter 抽象层</strong>，让插件能同时支持豆包与 DeepSeek 两个宿主。
+</p>
+<div class="overflow-x-auto mb-4">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-4">我的提交</th><th class="text-left py-2">做了什么</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>feat(architecture)</code></td><td class="py-2">新增 <strong>no-host-hardcoding 守卫测试</strong> + HostAdapter 批次改造（<code>content.ts</code>）</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>docs(phase1)</code></td><td class="py-2">标记 HostAdapter 抽象完成，配套架构守卫</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>feat(chat)</code></td><td class="py-2">侧边栏会话改为<strong>走豆包 Web session</strong> 路由</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>chore</code></td><td class="py-2">剥离旧品牌兼容层，接入 e2e runner</td></tr>
+<tr><td class="py-2 pr-4"><code>fix(ci)</code> ×3</td><td class="py-2">恢复质量闸门脚本、对齐基线、修正可执行位与 prompt-freeze 锚点</td></tr>
+</tbody>
+</table>
+</div>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>为什么值得单独讲：</strong>加一个「防硬编码」的守卫测试（no-host-hardcoding guard），
+意味着这不是一次性改完就完事，而是<strong>用测试把架构约束固化下来</strong>，防止后续开发把宿主逻辑又写回去。
+这是从「改功能」到「治理架构」的区别。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">功能矩阵</h3>
+<ul class="list-disc pl-5 space-y-1 opacity-85 mb-4 text-sm">
+<li><strong>侧边栏对话</strong> —— 在豆包网页内直接发消息，支持流式渲染；可选配置官方 API Key 后在任意网页使用</li>
+<li><strong>类原生工具调用</strong> —— 联网搜索、网页读取、工具结果展示</li>
+<li><strong>MCP 工具系统</strong> —— 接入 MCP 工具链</li>
+<li><strong>记忆系统</strong> —— 四类记忆：用户画像 <code>user</code>、行为反馈 <code>feedback</code>、话题上下文 <code>topic</code>、参考资料 <code>reference</code></li>
+<li><strong>Skill 技能系统</strong> 与<strong>系统提示词预设</strong></li>
+<li><strong>浏览器控制</strong> —— 在用户开启的边界内读取页面结构、执行可见操作</li>
+<li><strong>自动化任务</strong> —— 定时执行、持续执行能力</li>
+<li><strong>对话导出</strong> 与<strong>项目上下文产物下载</strong>（脚本 / Markdown / JSON / HTML 单文件）</li>
+<li><strong>OfficeCLI 文档工具</strong> —— 集成本地单二进制，含「拒绝额度生成路径」的保护逻辑</li>
+<li><strong>中英文体验</strong> —— 侧边栏、右键菜单、工具结果、续跑提示保持一致语言，同时保留用户自定义内容原文</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">工程边界（项目自述）</h3>
+<p class="text-sm opacity-85 mb-4">
+项目明确说明：豆包为<strong>第一优先级宿主</strong>，同时兼容 DeepSeek 网页版；
+支持 Chrome / Edge / Firefox 三浏览器，并提供 Android WebView 开发者基线。
+本地优先，数据留在本地。
+</p>
 </section>
 
 </div>
