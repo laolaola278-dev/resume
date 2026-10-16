@@ -154,6 +154,10 @@ export default defineConfig({
 		],
 	},
 	vite: {
+		server: {
+			// Allow the sandbox preview host (*.e2b.app) to access the dev server
+			allowedHosts: [".e2b.app", "localhost", "127.0.0.1", "0.0.0.0"],
+		},
 		build: {
 			rollupOptions: {
 				onwarn(warning, warn) {

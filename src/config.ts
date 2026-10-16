@@ -9,7 +9,7 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "谢键禧 - 个人简历",
-	subtitle: "大数据分析师",
+	subtitle: "AI 应用开发 · 大模型方向",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
 		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
@@ -43,10 +43,15 @@ export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
 		LinkPreset.Archive,
+		{
+			name: "作品集",
+			url: "/projects/", // Internal links should not include the base path, as it is automatically added
+			external: false,
+		},
 		LinkPreset.About,
 		{
 			name: "GitHub",
-			url: "https://github.com/", // Internal links should not include the base path, as it is automatically added
+			url: "https://github.com/laolaola278-dev", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},
 	],
@@ -55,12 +60,17 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "谢键禧",
-	bio: "大数据分析师 | 专科应届生 | 广州/深圳",
+	bio: "AI 应用开发 · 大模型 Agent 方向 | 大数据技术专业 | 广州/深圳",
 	links: [
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/",
+			url: "https://github.com/laolaola278-dev",
+		},
+		{
+			name: "邮箱",
+			icon: "fa6-solid:envelope",
+			url: "mailto:138****0485@163.com",
 		},
 	],
 };
