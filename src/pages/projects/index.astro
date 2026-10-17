@@ -3,15 +3,28 @@ import MainGridLayout from "../../layouts/MainGridLayout.astro";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 
-const projects = [
-	{ id: "agentos", name: "AgentOS", tag: "Agent 运行时", verified: "runtime" },
-	{ id: "skillc", name: "skillc", tag: "Skill 工程", verified: "runtime" },
-	{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链", verified: "runtime" },
-	{ id: "clihive", name: "clihive", tag: "Agent 协作", verified: "screenshots" },
-	{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏", verified: "runtime" },
-	{ id: "doubao-wplus", name: "Doubao WPlus", tag: "浏览器 AI 工作台", verified: "fork" },
-	{ id: "railmind", name: "RailMind", tag: "数据 + ML", verified: "code" },
-	{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排", verified: "code" },
+const groups = [
+	{
+		title: "主线 · Agent 与大模型工程",
+		desc: "我的主要方向：从 Agent 运行时、协作、编排，到 Skill 的编译与蒸馏，再到 LLM 工具链与端侧应用。",
+		projects: [
+			{ id: "agentos", name: "AgentOS", tag: "Agent 运行时 — 规划/执行/验证/评审闭环", verified: "runtime" },
+			{ id: "clihive", name: "clihive", tag: "Agent 协作 — 多 Agent 窗口与投递追踪", verified: "screenshots" },
+			{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排 — 工作流引擎 + LLMOps", verified: "code" },
+			{ id: "skillc", name: "skillc", tag: "Skill 编译 — 一次编写，编译到各底盘", verified: "runtime" },
+			{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏 — 从 git 历史提取团队知识", verified: "runtime" },
+			{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链 — API 可用性与延迟检测", verified: "runtime" },
+			{ id: "doubao-wplus", name: "Doubao WPlus", tag: "端侧 AI — 浏览器内 AI 工作台", verified: "fork" },
+		],
+	},
+	{
+		title: "支撑 · 工程规范与数据能力",
+		desc: "证明我能按企业级标准持续迭代项目（大数据技术专业 + 工程规范实践）。",
+		projects: [
+			{ id: "cyber-agent-platform", name: "Cyber Agent Platform", tag: "工程规范 — 100 commits，质量闸门与发布治理", verified: "code" },
+			{ id: "railmind", name: "RailMind", tag: "数据 + ML — 采集/流计算/训练/预测全链路", verified: "code" },
+		],
+	},
 ];
 
 const badge = {
@@ -30,7 +43,9 @@ const badge = {
 
 <p class="opacity-80 mb-6">
 我在 GitHub 上共有 31 个公开项目，方向集中在大模型 Agent 工程、Skill 体系与数据智能。
-本页挑选 <strong>6 个代表性项目</strong>，按比 README 更细的粒度展开：架构决策、核心实现、使用流程与运行证据。
+本页收录 <strong>9 个代表性项目</strong>，按<strong>两条能力主线</strong>编排：
+主线是 Agent 与大模型工程，支撑线是工程规范与数据能力。
+每项都比 README 更细地展开：架构决策、核心实现、使用流程与运行证据。
 </p>
 
 <div class="border-l-4 border-[var(--primary)] bg-[var(--codeblock-bg)] rounded-r-lg px-5 py-4 mb-8">
@@ -50,8 +65,12 @@ const badge = {
 </div>
 
 <h2 class="text-xl font-bold mb-4">项目一览</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-12">
-{projects.map((p) => (
+{groups.map((g) => (
+<div class="mb-8">
+<h3 class="font-bold mb-1">{g.title}</h3>
+<p class="text-sm opacity-70 mb-3">{g.desc}</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+{g.projects.map((p) => (
 <a href={`#${p.id}`} class="block p-4 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
 <div class="font-bold">{p.name}</div>
 <div class="text-sm opacity-70 mt-1">{p.tag}</div>
@@ -61,130 +80,8 @@ const badge = {
 </a>
 ))}
 </div>
-
-<!-- ============ clihive ============ -->
-<section id="clihive" class="mb-16 scroll-mt-24">
-<h2 class="text-2xl font-bold mb-1">clihive</h2>
-<div class="text-sm opacity-70 mb-3">
-CLI Agent 协作工作台 —— 一个窗口托管多个 Agent，共享记录 + 完整投递追踪
 </div>
-<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.screenshots.cls}`}>
-{badge.screenshots.text}
-</div>
-<p class="mb-4">
-<a href="https://github.com/laolaola278-dev/clihive" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/clihive</a>
-</p>
-
-<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
-<p class="mb-4 opacity-85 leading-relaxed">
-同时跑多个 CLI Agent（codex / claude / opencode）时，最大的痛点不是"能不能跑"，而是<strong>消息到底有没有送达</strong>。
-多个终端窗口各自为战，你发了一条指令，无法确认目标 Agent 是否真的收到、是否已执行。
-clihive 把这件事变成可观测的：所有消息落到一条共享记录上，每次投递都被完整追踪。
-</p>
-
-<h3 class="text-lg font-bold mt-6 mb-2">架构</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`┌─────────────────── titlebar (36px) ───────────────────┐
-├──────────┬──────────────────────────┬─────────────────┤
-│ sidebar  │  toolbar: + pane · mode  │ Fleet · 3       │
-│  240px   │                          │ ● p1 cli-1 work │
-│ work-    │  ┌────────┐ ┌────────┐   │ ● p2 cli-2 idle │
-│ spaces   │  │ cli-1  │ │ cli-2  │   │ ● p3 cli-3 2新  │
-│          │  ├────────┤ ├────────┤   ├─────────────────┤
-│          │  │ cli-3  │ │ cli-4  │   │ Orchestrator    │
-│          │  └────────┘ └────────┘   │ chat|shared|trace│
-│          │    hero terminal grid    ├─────────────────┤
-│          │                          │ composer → all  │
-├──────────┴──────────────────────────┴─────────────────┤
-│  activity trace drawer (Ctrl+Shift+T)                 │
-└───────────────────────────────────────────────────────┘`}</code></pre>
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">核心实现</h3>
-<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
-<li><strong>真实 PTY，不是模拟终端。</strong> 每个窗格是一个真实的伪终端，跑你的 shell 或 Agent CLI。</li>
-<li><strong>按命令行自动识别 CLI 类型。</strong> <code>src/server/cli-profiles.js</code> 识别 codex、claude、gemini、qwen、aider、opencode、cline、amp、goose、dsh、shell、node、python 等 13 类，窗格自动带上对应徽标与主题色。</li>
-<li><strong>投递策略按 CLI 能力匹配。</strong> 从 stdin 读提示符的程序走 <code>stdin</code> 投递（行以 CR 结尾，确保 Windows ConPTY 真的把数据交给子进程）；shell 和未知工具走非破坏性的 <code>display</code> 绘制；<strong>全屏 TUI 程序绝不喂模拟按键</strong>——这类改为以「托管 Agent」方式编排。</li>
-<li><strong>托管 Agent 走结构化接口。</strong> 用 <code>codex exec --json</code> / <code>claude -p --output-format stream-json</code> 驱动，一次一个任务，带权限边界；任务跨重启持久化，结果以校验过的 JSON 返回。</li>
-<li><strong>"完成"只表示待评审。</strong> 托管 Agent 标记 done 后需运维人员凭证据批准，而非自动放行。</li>
-<li><strong>投递追踪是可观测性契约。</strong> send → fanout → deliver → ack 全链路记录为 JSONL 并流式推送到追踪视图，每条记录标注通道（channel）、目标（target）、是否落地（ok）。</li>
-<li><strong>窗格间直接对话。</strong> 任意窗格内执行 <code>hive send --to all "..."</code> 或 <code>--to p3</code>，子 Agent 可互相跟进彼此的工作。</li>
-</ul>
-
-<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`# 启动服务
-npm start
-
-# 在窗格内与其他 Agent 对话
-hive send --to all "请先读取 src/server/http.js 再动手"
-hive send --to p3 "这个改动补一个回归测试"
-
-# 查看当前身份 / 窗格
-hive whoami
-
-# 快捷键
-Ctrl/Cmd+J  开关编排器
-Ctrl/Cmd+K  命令面板
-Ctrl/Cmd+B  折叠侧边栏
-Ctrl+Shift+T  活动追踪抽屉
-
-# 重新生成全部真实截图（headless Chromium 驱动真实 UI）
-npm run screenshots`}</code></pre>
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">运行实例</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-85 border border-[var(--line-divider)]">
-以下截图来自项目仓库 <code>screenshots/</code> 目录，由 <code>scripts/screenshots.mjs</code> 启动真实 <code>HiveServer</code>、
-用 headless Chromium 驱动真实窗口、创建真实 PTY 窗格后自动捕获，每一步带 PASS/FAIL 断言，非人工摆拍。
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/01-main-interface.png" alt="clihive 主界面：两个真实 PTY 窗格、侧边栏与 Fleet 名单" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">主界面：两个真实 PTY 窗格 + 侧边栏 + Fleet 名单</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/02-theme-amber.png" alt="clihive 琥珀主题：编排器展开并显示真实投递回执" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">琥珀石墨主题：编排器展开 + 真实投递回执</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/08-trace-drawer.png" alt="clihive 活动追踪抽屉：真实事件流" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">活动追踪抽屉（真实事件流）</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/09-pane-hive-cli.png" alt="窗格内执行 hive whoami 的真实输出" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">窗格内 <code>hive whoami</code> 输出</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/06-collab-panel.png" alt="协作面板：已注册 Agent 与已创建 Run" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">协作面板：已注册 Agent + 已创建 Run</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/07-command-palette.png" alt="命令面板（Ctrl+K）" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">命令面板（Ctrl+K）</figcaption>
-</figure>
-</div>
-
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/03-theme-matrix.png" alt="Matrix 主题" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">Matrix 主题</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/04-theme-void.png" alt="Void 主题" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">Void 主题</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/05-theme-neon.png" alt="Neon 主题" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">Neon 主题</figcaption>
-</figure>
-<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/10-desktop-app.png" alt="打包后的桌面应用窗口" loading="lazy" />
-<figcaption class="text-xs opacity-70 px-3 py-2">桌面应用（打包 exe）</figcaption>
-</figure>
-</div>
-</section>
+))}
 
 <!-- ============ AgentOS ============ -->
 <section id="agentos" class="mb-16 scroll-mt-24">
@@ -428,152 +325,225 @@ REVIEWING 阶段——只有独立评审员给出 PASS，且在隔离 worktree �
 </p>
 </section>
 
-<!-- ============ RailMind ============ -->
-<section id="railmind" class="mb-16 scroll-mt-24">
-<h2 class="text-2xl font-bold mb-1">RailMind</h2>
+<!-- ============ clihive ============ -->
+<section id="clihive" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">clihive</h2>
 <div class="text-sm opacity-70 mb-3">
-铁路票务实时数据智能平台 —— 采集 → 流计算 → 训练 → 在线预测 → 可视化
+CLI Agent 协作工作台 —— 一个窗口托管多个 Agent，共享记录 + 完整投递追踪
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.screenshots.cls}`}>
+{badge.screenshots.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/clihive" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/clihive</a>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
+<p class="mb-4 opacity-85 leading-relaxed">
+同时跑多个 CLI Agent（codex / claude / opencode）时，最大的痛点不是"能不能跑"，而是<strong>消息到底有没有送达</strong>。
+多个终端窗口各自为战，你发了一条指令，无法确认目标 Agent 是否真的收到、是否已执行。
+clihive 把这件事变成可观测的：所有消息落到一条共享记录上，每次投递都被完整追踪。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">架构</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`┌─────────────────── titlebar (36px) ───────────────────┐
+├──────────┬──────────────────────────┬─────────────────┤
+│ sidebar  │  toolbar: + pane · mode  │ Fleet · 3       │
+│  240px   │                          │ ● p1 cli-1 work │
+│ work-    │  ┌────────┐ ┌────────┐   │ ● p2 cli-2 idle │
+│ spaces   │  │ cli-1  │ │ cli-2  │   │ ● p3 cli-3 2新  │
+│          │  ├────────┤ ├────────┤   ├─────────────────┤
+│          │  │ cli-3  │ │ cli-4  │   │ Orchestrator    │
+│          │  └────────┘ └────────┘   │ chat|shared|trace│
+│          │    hero terminal grid    ├─────────────────┤
+│          │                          │ composer → all  │
+├──────────┴──────────────────────────┴─────────────────┤
+│  activity trace drawer (Ctrl+Shift+T)                 │
+└───────────────────────────────────────────────────────┘`}</code></pre>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">核心实现</h3>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong>真实 PTY，不是模拟终端。</strong> 每个窗格是一个真实的伪终端，跑你的 shell 或 Agent CLI。</li>
+<li><strong>按命令行自动识别 CLI 类型。</strong> <code>src/server/cli-profiles.js</code> 识别 codex、claude、gemini、qwen、aider、opencode、cline、amp、goose、dsh、shell、node、python 等 13 类，窗格自动带上对应徽标与主题色。</li>
+<li><strong>投递策略按 CLI 能力匹配。</strong> 从 stdin 读提示符的程序走 <code>stdin</code> 投递（行以 CR 结尾，确保 Windows ConPTY 真的把数据交给子进程）；shell 和未知工具走非破坏性的 <code>display</code> 绘制；<strong>全屏 TUI 程序绝不喂模拟按键</strong>——这类改为以「托管 Agent」方式编排。</li>
+<li><strong>托管 Agent 走结构化接口。</strong> 用 <code>codex exec --json</code> / <code>claude -p --output-format stream-json</code> 驱动，一次一个任务，带权限边界；任务跨重启持久化，结果以校验过的 JSON 返回。</li>
+<li><strong>"完成"只表示待评审。</strong> 托管 Agent 标记 done 后需运维人员凭证据批准，而非自动放行。</li>
+<li><strong>投递追踪是可观测性契约。</strong> send → fanout → deliver → ack 全链路记录为 JSONL 并流式推送到追踪视图，每条记录标注通道（channel）、目标（target）、是否落地（ok）。</li>
+<li><strong>窗格间直接对话。</strong> 任意窗格内执行 <code>hive send --to all "..."</code> 或 <code>--to p3</code>，子 Agent 可互相跟进彼此的工作。</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`# 启动服务
+npm start
+
+# 在窗格内与其他 Agent 对话
+hive send --to all "请先读取 src/server/http.js 再动手"
+hive send --to p3 "这个改动补一个回归测试"
+
+# 查看当前身份 / 窗格
+hive whoami
+
+# 快捷键
+Ctrl/Cmd+J  开关编排器
+Ctrl/Cmd+K  命令面板
+Ctrl/Cmd+B  折叠侧边栏
+Ctrl+Shift+T  活动追踪抽屉
+
+# 重新生成全部真实截图（headless Chromium 驱动真实 UI）
+npm run screenshots`}</code></pre>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">运行实例</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-85 border border-[var(--line-divider)]">
+以下截图来自项目仓库 <code>screenshots/</code> 目录，由 <code>scripts/screenshots.mjs</code> 启动真实 <code>HiveServer</code>、
+用 headless Chromium 驱动真实窗口、创建真实 PTY 窗格后自动捕获，每一步带 PASS/FAIL 断言，非人工摆拍。
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/01-main-interface.png" alt="clihive 主界面：两个真实 PTY 窗格、侧边栏与 Fleet 名单" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">主界面：两个真实 PTY 窗格 + 侧边栏 + Fleet 名单</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/02-theme-amber.png" alt="clihive 琥珀主题：编排器展开并显示真实投递回执" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">琥珀石墨主题：编排器展开 + 真实投递回执</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/08-trace-drawer.png" alt="clihive 活动追踪抽屉：真实事件流" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">活动追踪抽屉（真实事件流）</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/09-pane-hive-cli.png" alt="窗格内执行 hive whoami 的真实输出" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">窗格内 <code>hive whoami</code> 输出</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/06-collab-panel.png" alt="协作面板：已注册 Agent 与已创建 Run" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">协作面板：已注册 Agent + 已创建 Run</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/07-command-palette.png" alt="命令面板（Ctrl+K）" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">命令面板（Ctrl+K）</figcaption>
+</figure>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/03-theme-matrix.png" alt="Matrix 主题" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">Matrix 主题</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/04-theme-void.png" alt="Void 主题" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">Void 主题</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/05-theme-neon.png" alt="Neon 主题" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">Neon 主题</figcaption>
+</figure>
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
+<img src="/projects/clihive/10-desktop-app.png" alt="打包后的桌面应用窗口" loading="lazy" />
+<figcaption class="text-xs opacity-70 px-3 py-2">桌面应用（打包 exe）</figcaption>
+</figure>
+</div>
+</section>
+
+<!-- ============ AutoFlow AI ============ -->
+<section id="autoflow-ai" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">AutoFlow AI</h2>
+<div class="text-sm opacity-70 mb-3">
+企业级 AI Agent 编排平台 —— 可视化工作流 + 持久化队列 + LLMOps 可观测
 </div>
 <div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
 {badge.code.text}
 </div>
 <p class="mb-4">
-<a href="https://github.com/laolaola278-dev/RailMind" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/RailMind</a>
+<a href="https://github.com/laolaola278-dev/autoflow-ai" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/autoflow-ai</a>
 </p>
 
-<div class="border-l-4 border-amber-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
-<strong>项目自带诚实声明（原文）：</strong>本项目是面向生产的工程化原型，在架构完整性和工程规范上达到生产级标准，
-但在数据规模和高可用部署上存在已知限制，<strong>不作为真实生产系统使用</strong>。
-本项目非 12306 官方系统、非购票/抢票工具，仅用于工程实践、研究、教学与技术展示。
+<h3 class="text-lg font-bold mt-6 mb-2">系统架构</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`┌─ Console(Next.js · React Flow 编辑器 · SSE Agent 控制台 · Dashboard)
+│
+├─ API(Next.js Route Handlers · 48 路由 · REST + SSE)
+│
+├─ AI Runtime ───────── Intelligent Model Router ──────── LLM 统一层
+│  Planner → Permission Gate     延迟/成本/成功率/质量       chat · stream
+│  → Tool Executors(真 RAG)      四维评分 + 策略切换          tool_call
+│  → Trace Events(事件溯源)      + 回退链(实弹)              embedding
+│                                                           BYOK→env→内置模拟
+│
+├─ Durable Queue + Worker(Postgres FOR UPDATE SKIP LOCKED)
+│  原子租约 · heartbeat 续约 · fencing 写回 · reaper 清过期
+│  · 指数退避 · 原子幂等
+│
+├─ Trace-first Observability(AsyncLocalStorage 零签名埋点)
+│  API → Queue → Workflow → Node → LLM → Tool → External 全链 span
+│
+└─ PostgreSQL(25+ 表 · pgvector-ready · 微美元成本账本 · 审计三线)`}</code></pre>
 </div>
 
-<h3 class="text-lg font-bold mt-6 mb-2">数据规模</h3>
+<h3 class="text-lg font-bold mt-6 mb-2">核心能力</h3>
 <div class="overflow-x-auto mb-4">
 <table class="w-full text-sm border-collapse">
 <thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-4">指标</th><th class="text-right py-2">值</th>
+<th class="text-left py-2 pr-4">域</th><th class="text-left py-2">交付要点</th>
 </tr></thead>
 <tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">ticket_snapshot 记录数</td><td class="text-right py-2">3,213,412</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">覆盖路线数</td><td class="text-right py-2">400</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">覆盖车次数</td><td class="text-right py-2">3,795</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">座位类型数</td><td class="text-right py-2">10</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">数据时间范围</td><td class="text-right py-2">3 天（07-26 ~ 07-29）</td></tr>
-<tr><td class="py-2">特征数（无泄漏）</td><td class="text-right py-2">8</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Workflow Engine</strong></td><td class="py-2">React Flow 可视化画布 · 9 类节点（3 触发器 + HTTP/DB/AI Agent/文件/飞书/邮件）· DAG 拓扑调度 · 节点级重试熔断 · 故障演练开关</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Durable Execution</strong></td><td class="py-2">持久化队列 · <code>SKIP LOCKED</code> 原子租约 · heartbeat（TTL/3）· fencing 条件写回 · reaper 恢复 · 4s→120s 退避 · 原子幂等</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>AI Agent Runtime</strong></td><td class="py-2">Planner（chatWithTools）→ 工具权限（放行/审批/拒绝 + 审计）→ 执行器 → SSE 实时事件（replay + subscribe）→ Trace 落库 → 成本账本</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>企业 RAG</strong></td><td class="py-2">语义切片（360 字）→ 确定性 64 维向量 → <strong>双路径检索</strong>（pgvector ivfflat 可用时 / JSONB 余弦回退）→ 引用卡片可溯源</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Intelligent Router</strong></td><td class="py-2">四维实时评分 + 4 策略（cost/latency/balanced/quality）+ 白名单治理 + 失败回退链（≤3 跳）+ 评估质量回灌（人工权重 ×2）</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Observability</strong></td><td class="py-2">ALS 零签名分布式追踪 · 节点耗时 Gantt · span 瀑布页 · 成本趋势 · 失败节点榜 · 告警（规则/通道/认领/自动解除/去重）</td></tr>
+<tr><td class="py-2 pr-4"><strong>Enterprise Security</strong></td><td class="py-2">RBAC 四角色 · BYOK 密钥按租户隔离（掩码展示）· 工具沙箱（风险分级 + 审批门）· 审计三线（logs/events/audits）</td></tr>
 </tbody>
 </table>
 </div>
 
-<h3 class="text-lg font-bold mt-6 mb-2">技术链路</h3>
+<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
 <div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`12306 API
-  │  (curl_cffi TLS 指纹模拟 + APScheduler 定时采集 + PeakMode 调频)
-  ▼
-PostgreSQL ticket_snapshot（3.2M+ 记录，月度 RANGE 分区）
-  │  (EventPublisher)
-  ▼
-Kafka（railmind.ticket.raw · acks=all · idempotence · lz4）
-  │
-  ▼
-Flink Consumer（PyFlink 流计算）
-  │  特征计算: query_count_1h, demand_score, availability_rate ...
-  ▼
-PostgreSQL ticket_features_realtime（实时特征表）
-  │
-  ▼
-DatasetBuilder（extract_baseline_features → 无泄漏三分类目标）
-  │  0=no_ticket / 1=sold_out / 2=available
-  ▼
-Model Zoo（LR / RF / XGBoost / LightGBM）→ Model Registry → Serving Engine
-  │
-  ▼
-Prediction API（FastAPI）→ Frontend（Vue 3.5 + ECharts）`}</code></pre>
-</div>
+<pre class="text-xs leading-relaxed"><code>{`git clone <repo> && cd autoflow-ai
+npm install
+# .env → DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+npx drizzle-kit push --force          # 零停机的增量 schema
+npx tsx scripts/demo/reset-demo.ts    # 灌入演示数据
+npm run build && npm start            # → http://localhost:3000
 
-<h3 class="text-lg font-bold mt-6 mb-2">⭐ 核心技术突破：数据泄漏的定位与修复</h3>
-<p class="opacity-85 mb-3 leading-relaxed">
-这是整个项目最有价值的部分，完整记录了「发现异常 → 定位根因 → 修复 → 重新评估」的工程闭环。
-</p>
-
-<h4 class="font-bold mt-4 mb-2">第一步：识别虚假的完美</h4>
-<p class="opacity-85 mb-3">
-首个 Baseline（线性回归预测 <code>remaining_count</code>）在测试集上得到 <strong>R² = 1.0</strong>（RMSE ≈ 10⁻¹³，已达机器精度）。
-这是数据泄漏的明确信号，而非真实预测能力——<strong>能识别这一点本身就是关键能力</strong>，很多初学者会把它当成好结果上报。
-</p>
-
-<h4 class="font-bold mt-4 mb-2">第二步：定位 3 个泄漏特征</h4>
-<div class="overflow-x-auto mb-3">
-<table class="w-full text-sm border-collapse">
-<thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-4">泄漏特征</th><th class="text-left py-2">泄漏原因</th>
-</tr></thead>
-<tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>previous_remaining</code></td><td class="py-2">首条记录以当前 <code>remaining_count</code> 回填</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>remaining_change</code></td><td class="py-2">定义为 <code>remaining_count - previous_remaining</code>，可反推出目标</td></tr>
-<tr><td class="py-2 pr-4"><code>rolling_mean</code></td><td class="py-2">滚动窗口包含当前 <code>remaining_count</code> 值</td></tr>
-</tbody>
-</table>
-</div>
-<p class="opacity-85 mb-3">
-模型实际学到的只是一个恒等式 <code>remaining_count ≈ previous_remaining + remaining_change</code>，其余特征系数趋近于 0。
-</p>
-
-<h4 class="font-bold mt-4 mb-2">第三步：修复</h4>
-<ul class="list-disc pl-5 space-y-1 opacity-85 mb-4">
-<li>目标由回归（<code>remaining_count</code>）改为<strong>三分类</strong>（<code>seat_status</code>：no_ticket / sold_out / available）</li>
-<li>移除 3 个泄漏特征</li>
-<li>以 Logistic Regression 作为可信基准重新训练</li>
-</ul>
-
-<h4 class="font-bold mt-4 mb-2">第四步：重新评估与模型对比</h4>
-<div class="overflow-x-auto mb-3">
-<table class="w-full text-sm border-collapse">
-<thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-3">模型</th><th class="text-right py-2 pr-3">Accuracy</th><th class="text-right py-2 pr-3">F1 Macro</th><th class="text-right py-2 pr-3">ROC-AUC</th><th class="text-right py-2">训练耗时</th>
-</tr></thead>
-<tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">Logistic Regression（基准）</td><td class="text-right py-2 pr-3">0.5425</td><td class="text-right py-2 pr-3">0.4841</td><td class="text-right py-2 pr-3">0.6912</td><td class="text-right py-2">70.98s</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">Random Forest</td><td class="text-right py-2 pr-3">0.7371</td><td class="text-right py-2 pr-3">0.7231</td><td class="text-right py-2 pr-3">0.8979</td><td class="text-right py-2">2.29s</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">XGBoost</td><td class="text-right py-2 pr-3">0.7474</td><td class="text-right py-2 pr-3">0.7381</td><td class="text-right py-2 pr-3">0.8985</td><td class="text-right py-2">0.68s</td></tr>
-<tr><td class="py-2"><strong>LightGBM（最优）</strong></td><td class="text-right py-2 pr-3"><strong>0.7556</strong></td><td class="text-right py-2 pr-3"><strong>0.7461</strong></td><td class="text-right py-2 pr-3"><strong>0.9065</strong></td><td class="text-right py-2"><strong>0.50s</strong></td></tr>
-</tbody>
-</table>
-</div>
-<p class="opacity-85 mb-4 leading-relaxed">
-完整轨迹：<strong>虚假 R²=1.0 → 真实 ROC-AUC 0.6912（LR 基准）→ 0.9065（LightGBM 最优）</strong>。
-4 个模型在<strong>同一数据集（100K 采样）、同一特征（8 个无泄漏特征）、同一切分（80/20, random_state=42）</strong>下对比。
-</p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
-<strong>交叉验证（我在构建本页时做的算术核对）：</strong>
-70.98s ÷ 0.50s = 141.96 ≈ README 声称的"训练快 141×" ✓；
-(0.9065 − 0.6912) ÷ 0.6912 = 31.1% ≈ README 声称的"ROC-AUC 提升 +31.1%" ✓。
-两处派生数字与原数据精确自洽——这是真实实验记录而非编造数据的有力佐证。
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">其他工程要点</h3>
-<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
-<li><strong>模型热替换：</strong>Serving Engine 支持运行时换模型，相同 <code>model_id</code> 热替换，<strong>API 全程无感知</strong>，无需修改任何调用方代码</li>
-<li><strong>工程规范：</strong>30 条 ADR（架构决策记录）、1570+ 后端测试、Docker Compose 14 服务（非 root + read_only 文件系统）</li>
-<li><strong>安全加固：</strong>JWT + RBAC、速率限制、安全响应头、审计日志、日志脱敏</li>
-</ul>
-
-<h3 class="text-lg font-bold mt-6 mb-2">性能指标</h3>
-<div class="overflow-x-auto mb-3">
-<table class="w-full text-sm border-collapse">
-<thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-3">场景</th><th class="text-right py-2 pr-3">QPS</th><th class="text-right py-2 pr-3">P50</th><th class="text-right py-2 pr-3">P99</th><th class="text-right py-2">错误率</th>
-</tr></thead>
-<tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">顺序（n=5000）</td><td class="text-right py-2 pr-3">184</td><td class="text-right py-2 pr-3">4.58ms</td><td class="text-right py-2 pr-3">11.39ms</td><td class="text-right py-2">0.00%</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2">并发（n=5000, 10 workers）</td><td class="text-right py-2 pr-3">65</td><td class="text-right py-2 pr-3">116.10ms</td><td class="text-right py-2 pr-3">352.34ms</td><td class="text-right py-2">0.00%</td></tr>
-<tr><td class="py-2">稳定性（5 分钟）</td><td class="text-right py-2 pr-3">193</td><td class="text-right py-2 pr-3">4.38ms</td><td class="text-right py-2 pr-3">8.47ms</td><td class="text-right py-2">0.00%</td></tr>
-</tbody>
-</table>
+# 按 8 幕剧本走完业务闭环
+open docs/DEMO-SCRIPT.md
+# 故障演练：LLM 故障 → 路由回退 → 恢复（无损数据，自动清理）
+npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
 </div>
 <p class="text-sm opacity-85 mb-4">
-推理性能：模型加载 1.60s · 首次（冷启动）6.66ms · <strong>平均（热）0.65ms</strong> · P99 1.75ms · 批量 100 样本 62.55ms。
-资源占用：CPU 平均 198%（约 2 核）、内存 291MB。
+<strong>没有 LLM Key 也能完整验证：</strong>内置确定性模拟适配器（带标定延迟），
+队列 / 追踪 / 权限 / 计量 / 回退等所有机制真实可验；配置 <code>OPENAI_API_KEY</code> /
+<code>MOONSHOT_API_KEY</code> / <code>ANTHROPIC_API_KEY</code> 或工作区 BYOK 即切换到真实模型。
 </p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">自述性能与可靠性基线</h3>
+<div class="overflow-x-auto mb-4">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-4">报告</th><th class="text-left py-2">关键基线</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4">PERFORMANCE</td><td class="py-2">入队 <strong>199 QPS / P50 33.8ms</strong> · 单节点 sync P50 309.6ms · AI-DAG P50 2117ms · SSE 40 路 <strong>560/560 零丢帧</strong>、投递延迟 P50 4ms · 向量 1k@37.7ms</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4">RELIABILITY</td><td class="py-2">Worker 崩溃 <strong>2.46s 自愈 + 恰好一次 + fencing 0 行</strong> · DB 断供 4ms 恢复 · LLM 5xx/429/timeout 回退三场景全过 · 节点重试 ×3 熔断</td></tr>
+<tr><td class="py-2 pr-4">PATCH-REVIEW</td><td class="py-2"><strong>R-02 存储层原子幂等：100 并发同键 ⇒ 1 job / 99 dedupe / 单执行</strong> · R-01 顶层异常终态化（三层场景零孤儿）</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>我特别想保留的两处诚实声明（项目原文）：</strong>
+<ul class="list-disc pl-5 mt-2 space-y-1">
+<li>故障演练<strong>捕获了 2 个真实缺陷（已修复）</strong>——主动暴露问题而非只报喜</li>
+<li>Memory 模块标注为「诚实呈现」：本期仅以评估历史 + 历史 trace 呈现经验召回，
+独立记忆子系统列入 Phase 9，<strong>透明度原则：不宣称未实现的能力</strong></li>
+</ul>
+</div>
 </section>
 
 <!-- ============ skillc ============ -->
@@ -759,216 +729,6 @@ actions.push({
 </p>
 </section>
 
-<!-- ============ api-health-checker ============ -->
-<section id="api-health-checker" class="mb-16 scroll-mt-24">
-<h2 class="text-2xl font-bold mb-1">api-health-checker</h2>
-<div class="text-sm opacity-70 mb-3">
-LLM API 健康检测服务 —— 批量验证各家大模型密钥可用性与延迟
-</div>
-<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.runtime.cls}`}>
-{badge.runtime.text}
-</div>
-<p class="mb-4">
-<a href="https://github.com/laolaola278-dev/api-health-checker" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/api-health-checker</a>
-</p>
-
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
-<strong>本页唯一「由我实机跑通」的项目。</strong>我在构建本站时，于隔离环境中安装依赖、
-真实启动了服务并逐个调用接口。下方所有响应均为真实返回值，未做任何修饰。
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
-<p class="opacity-85 mb-4 leading-relaxed">
-手上有一批大模型 API Key，哪些还能用？延迟多少？可用模型列表是什么？
-手动一个个试很痛苦。本项目把这件事做成批量、并发、可追溯的服务。
-</p>
-
-<h3 class="text-lg font-bold mt-6 mb-2">核心实现</h3>
-<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
-<li><strong>统一 Provider 抽象</strong>（<code>app/providers/</code>）：OpenAI、Anthropic、Google、DeepSeek、Moonshot 各自实现，外加任意 OpenAI-compatible 端点</li>
-<li><strong>并发批量检测</strong>：<code>BATCH_MAX_CONCURRENCY</code> 控制并发度</li>
-<li><strong>SSRF 防护</strong>：拦截内网/私网地址，可单独放行 localhost 便于本地开发</li>
-<li><strong>密钥全程掩码</strong>：存储与展示均为 <code>sk-f...7890</code> 形式，检测历史落库可追溯</li>
-<li><strong>认证中间件</strong>：<code>/api/*</code> 需 <code>X-API-Key</code> 头，密钥为默认值时启动即告警</li>
-</ul>
-
-<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`pip install -r requirements.txt
-cp .env.example .env      # 配置 DATABASE_URL / API_AUTH_ENABLED 等
-python main.py            # → http://localhost:8000
-
-# 接口一览（实机验证，共 14 个端点）
-GET  /              Web 仪表盘
-GET  /history       历史记录页
-GET  /docs          Swagger 交互式文档
-POST /api/check/key          检测单个密钥
-POST /api/models/{provider}  列出可用模型
-POST /api/speed-test         速度测试
-POST /api/batch-check        批量并发检测
-POST /api/compatible-check   兼容端点检测
-GET  /api/health / /api/providers / /api/dashboard
-GET  /api/history  / DELETE /api/history/{id}`}</code></pre>
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">✅ 实机运行记录</h3>
-<p class="text-sm opacity-85 mb-3">
-服务启动（真实日志）：
-</p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [1899] using WatchFiles
-INFO:     Started server process [1909]
-INFO:     Waiting for application startup.
-2026-10-16 12:32:46,605 - main - INFO - Starting API Health Checker v1.1.0...
-2026-10-16 12:32:46,607 - main - INFO - Database initialized.
-INFO:     Application startup complete.`}</code></pre>
-</div>
-
-<p class="text-sm opacity-85 mb-3">
-调用 <code>GET /api/health</code> 与 <code>GET /api/providers</code>（真实返回）：
-</p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`{
-    "status": "healthy",
-    "service": "api-health-checker",
-    "version": "1.1.0",
-    "timestamp": "2026-10-16T12:33:01.853583+00:00"
-}
-
-{
-    "providers": [
-        "openai", "anthropic", "gemini",
-        "deepseek", "moonshot", "openai_compatible"
-    ]
-}`}</code></pre>
-</div>
-
-<p class="text-sm opacity-85 mb-3">
-输入校验生效（传入不存在的 provider，被正确拦截）：
-</p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`POST /api/check/key  {"provider":"nonexistent","api_key":"sk-test"}
-
-{
-    "provider": "nonexistent",
-    "status": "failed",
-    "message": "Unsupported provider: nonexistent",
-    "models": []
-}`}</code></pre>
-</div>
-
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
-<strong>诚实记录：</strong>仓库内随附的 SQLite 数据库存有 <strong>26 条真实历史检测记录</strong>，
-时间跨度为 2026-06-14 13:59 至 2026-06-15 02:50（约半天），
-分布为 openai 19 条 / openai_compatible 4 条 / nonexistent 3 条。
-<strong>这 26 条全部为 failed</strong>，错误信息均为网络层失败（如 <code>All connection attempts failed</code>、<code>TLS/SSL connection has been closed</code>）。
-<p class="mt-2">
-这说明两点：工具确实被真实使用过（才会留下历史），
-但<strong>成功路径（happy path）并未被真实流量验证过</strong>——受网络环境限制，我这次实机验证也只覆盖了健康检查、
-Provider 列表、历史查询与输入校验等路径，未能完成一次真正连通外部大模型的成功检测。
-此处如实说明，不夸大验证范围。
-</p>
-</div>
-</section>
-
-<!-- ============ AutoFlow AI ============ -->
-<section id="autoflow-ai" class="mb-16 scroll-mt-24">
-<h2 class="text-2xl font-bold mb-1">AutoFlow AI</h2>
-<div class="text-sm opacity-70 mb-3">
-企业级 AI Agent 编排平台 —— 可视化工作流 + 持久化队列 + LLMOps 可观测
-</div>
-<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
-{badge.code.text}
-</div>
-<p class="mb-4">
-<a href="https://github.com/laolaola278-dev/autoflow-ai" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/autoflow-ai</a>
-</p>
-
-<h3 class="text-lg font-bold mt-6 mb-2">系统架构</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`┌─ Console(Next.js · React Flow 编辑器 · SSE Agent 控制台 · Dashboard)
-│
-├─ API(Next.js Route Handlers · 48 路由 · REST + SSE)
-│
-├─ AI Runtime ───────── Intelligent Model Router ──────── LLM 统一层
-│  Planner → Permission Gate     延迟/成本/成功率/质量       chat · stream
-│  → Tool Executors(真 RAG)      四维评分 + 策略切换          tool_call
-│  → Trace Events(事件溯源)      + 回退链(实弹)              embedding
-│                                                           BYOK→env→内置模拟
-│
-├─ Durable Queue + Worker(Postgres FOR UPDATE SKIP LOCKED)
-│  原子租约 · heartbeat 续约 · fencing 写回 · reaper 清过期
-│  · 指数退避 · 原子幂等
-│
-├─ Trace-first Observability(AsyncLocalStorage 零签名埋点)
-│  API → Queue → Workflow → Node → LLM → Tool → External 全链 span
-│
-└─ PostgreSQL(25+ 表 · pgvector-ready · 微美元成本账本 · 审计三线)`}</code></pre>
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">核心能力</h3>
-<div class="overflow-x-auto mb-4">
-<table class="w-full text-sm border-collapse">
-<thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-4">域</th><th class="text-left py-2">交付要点</th>
-</tr></thead>
-<tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Workflow Engine</strong></td><td class="py-2">React Flow 可视化画布 · 9 类节点（3 触发器 + HTTP/DB/AI Agent/文件/飞书/邮件）· DAG 拓扑调度 · 节点级重试熔断 · 故障演练开关</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Durable Execution</strong></td><td class="py-2">持久化队列 · <code>SKIP LOCKED</code> 原子租约 · heartbeat（TTL/3）· fencing 条件写回 · reaper 恢复 · 4s→120s 退避 · 原子幂等</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>AI Agent Runtime</strong></td><td class="py-2">Planner（chatWithTools）→ 工具权限（放行/审批/拒绝 + 审计）→ 执行器 → SSE 实时事件（replay + subscribe）→ Trace 落库 → 成本账本</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>企业 RAG</strong></td><td class="py-2">语义切片（360 字）→ 确定性 64 维向量 → <strong>双路径检索</strong>（pgvector ivfflat 可用时 / JSONB 余弦回退）→ 引用卡片可溯源</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Intelligent Router</strong></td><td class="py-2">四维实时评分 + 4 策略（cost/latency/balanced/quality）+ 白名单治理 + 失败回退链（≤3 跳）+ 评估质量回灌（人工权重 ×2）</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><strong>Observability</strong></td><td class="py-2">ALS 零签名分布式追踪 · 节点耗时 Gantt · span 瀑布页 · 成本趋势 · 失败节点榜 · 告警（规则/通道/认领/自动解除/去重）</td></tr>
-<tr><td class="py-2 pr-4"><strong>Enterprise Security</strong></td><td class="py-2">RBAC 四角色 · BYOK 密钥按租户隔离（掩码展示）· 工具沙箱（风险分级 + 审批门）· 审计三线（logs/events/audits）</td></tr>
-</tbody>
-</table>
-</div>
-
-<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
-<pre class="text-xs leading-relaxed"><code>{`git clone <repo> && cd autoflow-ai
-npm install
-# .env → DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
-npx drizzle-kit push --force          # 零停机的增量 schema
-npx tsx scripts/demo/reset-demo.ts    # 灌入演示数据
-npm run build && npm start            # → http://localhost:3000
-
-# 按 8 幕剧本走完业务闭环
-open docs/DEMO-SCRIPT.md
-# 故障演练：LLM 故障 → 路由回退 → 恢复（无损数据，自动清理）
-npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
-</div>
-<p class="text-sm opacity-85 mb-4">
-<strong>没有 LLM Key 也能完整验证：</strong>内置确定性模拟适配器（带标定延迟），
-队列 / 追踪 / 权限 / 计量 / 回退等所有机制真实可验；配置 <code>OPENAI_API_KEY</code> /
-<code>MOONSHOT_API_KEY</code> / <code>ANTHROPIC_API_KEY</code> 或工作区 BYOK 即切换到真实模型。
-</p>
-
-<h3 class="text-lg font-bold mt-6 mb-2">自述性能与可靠性基线</h3>
-<div class="overflow-x-auto mb-4">
-<table class="w-full text-sm border-collapse">
-<thead><tr class="border-b border-[var(--line-divider)]">
-<th class="text-left py-2 pr-4">报告</th><th class="text-left py-2">关键基线</th>
-</tr></thead>
-<tbody class="opacity-85">
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4">PERFORMANCE</td><td class="py-2">入队 <strong>199 QPS / P50 33.8ms</strong> · 单节点 sync P50 309.6ms · AI-DAG P50 2117ms · SSE 40 路 <strong>560/560 零丢帧</strong>、投递延迟 P50 4ms · 向量 1k@37.7ms</td></tr>
-<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4">RELIABILITY</td><td class="py-2">Worker 崩溃 <strong>2.46s 自愈 + 恰好一次 + fencing 0 行</strong> · DB 断供 4ms 恢复 · LLM 5xx/429/timeout 回退三场景全过 · 节点重试 ×3 熔断</td></tr>
-<tr><td class="py-2 pr-4">PATCH-REVIEW</td><td class="py-2"><strong>R-02 存储层原子幂等：100 并发同键 ⇒ 1 job / 99 dedupe / 单执行</strong> · R-01 顶层异常终态化（三层场景零孤儿）</td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
-<strong>我特别想保留的两处诚实声明（项目原文）：</strong>
-<ul class="list-disc pl-5 mt-2 space-y-1">
-<li>故障演练<strong>捕获了 2 个真实缺陷（已修复）</strong>——主动暴露问题而非只报喜</li>
-<li>Memory 模块标注为「诚实呈现」：本期仅以评估历史 + 历史 trace 呈现经验召回，
-独立记忆子系统列入 Phase 9，<strong>透明度原则：不宣称未实现的能力</strong></li>
-</ul>
-</div>
-</section>
-
 <!-- ============ crew-skill ============ -->
 <section id="crew-skill" class="mb-16 scroll-mt-24">
 <h2 class="text-2xl font-bold mb-1">crew-skill</h2>
@@ -1139,6 +899,119 @@ weakest area: docs (0/20)`}</code></pre>
 </ul>
 </section>
 
+<!-- ============ api-health-checker ============ -->
+<section id="api-health-checker" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">api-health-checker</h2>
+<div class="text-sm opacity-70 mb-3">
+LLM API 健康检测服务 —— 批量验证各家大模型密钥可用性与延迟
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.runtime.cls}`}>
+{badge.runtime.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/api-health-checker" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/api-health-checker</a>
+</p>
+
+<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
+<strong>本页唯一「由我实机跑通」的项目。</strong>我在构建本站时，于隔离环境中安装依赖、
+真实启动了服务并逐个调用接口。下方所有响应均为真实返回值，未做任何修饰。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
+<p class="opacity-85 mb-4 leading-relaxed">
+手上有一批大模型 API Key，哪些还能用？延迟多少？可用模型列表是什么？
+手动一个个试很痛苦。本项目把这件事做成批量、并发、可追溯的服务。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">核心实现</h3>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong>统一 Provider 抽象</strong>（<code>app/providers/</code>）：OpenAI、Anthropic、Google、DeepSeek、Moonshot 各自实现，外加任意 OpenAI-compatible 端点</li>
+<li><strong>并发批量检测</strong>：<code>BATCH_MAX_CONCURRENCY</code> 控制并发度</li>
+<li><strong>SSRF 防护</strong>：拦截内网/私网地址，可单独放行 localhost 便于本地开发</li>
+<li><strong>密钥全程掩码</strong>：存储与展示均为 <code>sk-f...7890</code> 形式，检测历史落库可追溯</li>
+<li><strong>认证中间件</strong>：<code>/api/*</code> 需 <code>X-API-Key</code> 头，密钥为默认值时启动即告警</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">运行流程</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`pip install -r requirements.txt
+cp .env.example .env      # 配置 DATABASE_URL / API_AUTH_ENABLED 等
+python main.py            # → http://localhost:8000
+
+# 接口一览（实机验证，共 14 个端点）
+GET  /              Web 仪表盘
+GET  /history       历史记录页
+GET  /docs          Swagger 交互式文档
+POST /api/check/key          检测单个密钥
+POST /api/models/{provider}  列出可用模型
+POST /api/speed-test         速度测试
+POST /api/batch-check        批量并发检测
+POST /api/compatible-check   兼容端点检测
+GET  /api/health / /api/providers / /api/dashboard
+GET  /api/history  / DELETE /api/history/{id}`}</code></pre>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">✅ 实机运行记录</h3>
+<p class="text-sm opacity-85 mb-3">
+服务启动（真实日志）：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [1899] using WatchFiles
+INFO:     Started server process [1909]
+INFO:     Waiting for application startup.
+2026-10-16 12:32:46,605 - main - INFO - Starting API Health Checker v1.1.0...
+2026-10-16 12:32:46,607 - main - INFO - Database initialized.
+INFO:     Application startup complete.`}</code></pre>
+</div>
+
+<p class="text-sm opacity-85 mb-3">
+调用 <code>GET /api/health</code> 与 <code>GET /api/providers</code>（真实返回）：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`{
+    "status": "healthy",
+    "service": "api-health-checker",
+    "version": "1.1.0",
+    "timestamp": "2026-10-16T12:33:01.853583+00:00"
+}
+
+{
+    "providers": [
+        "openai", "anthropic", "gemini",
+        "deepseek", "moonshot", "openai_compatible"
+    ]
+}`}</code></pre>
+</div>
+
+<p class="text-sm opacity-85 mb-3">
+输入校验生效（传入不存在的 provider，被正确拦截）：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`POST /api/check/key  {"provider":"nonexistent","api_key":"sk-test"}
+
+{
+    "provider": "nonexistent",
+    "status": "failed",
+    "message": "Unsupported provider: nonexistent",
+    "models": []
+}`}</code></pre>
+</div>
+
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>诚实记录：</strong>仓库内随附的 SQLite 数据库存有 <strong>26 条真实历史检测记录</strong>，
+时间跨度为 2026-06-14 13:59 至 2026-06-15 02:50（约半天），
+分布为 openai 19 条 / openai_compatible 4 条 / nonexistent 3 条。
+<strong>这 26 条全部为 failed</strong>，错误信息均为网络层失败（如 <code>All connection attempts failed</code>、<code>TLS/SSL connection has been closed</code>）。
+<p class="mt-2">
+这说明两点：工具确实被真实使用过（才会留下历史），
+但<strong>成功路径（happy path）并未被真实流量验证过</strong>——受网络环境限制，我这次实机验证也只覆盖了健康检查、
+Provider 列表、历史查询与输入校验等路径，未能完成一次真正连通外部大模型的成功检测。
+此处如实说明，不夸大验证范围。
+</p>
+</div>
+</section>
+
 <!-- ============ doubao-wplus ============ -->
 <section id="doubao-wplus" class="mb-16 scroll-mt-24">
 <h2 class="text-2xl font-bold mb-1">Doubao WPlus</h2>
@@ -1207,6 +1080,265 @@ weakest area: docs (0/20)`}</code></pre>
 项目明确说明：豆包为<strong>第一优先级宿主</strong>，同时兼容 DeepSeek 网页版；
 支持 Chrome / Edge / Firefox 三浏览器，并提供 Android WebView 开发者基线。
 本地优先，数据留在本地。
+</p>
+</section>
+
+<!-- ============ cyber-agent-platform ============ -->
+<section id="cyber-agent-platform" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">Cyber Agent Platform (CAP)</h2>
+<div class="text-sm opacity-70 mb-3">
+企业级安全编排控制平面 —— 本项目主要作为「工程规范能力」的证据
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
+{badge.code.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/cyber-agent-platform" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/cyber-agent-platform</a>
+</p>
+
+<div class="border-l-4 border-[var(--primary)] bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
+<strong>为什么收录它：</strong>这是我投入 commit 最多的项目（<strong>100 个提交且全部为本人</strong>），
+但它主打安全编排，与我的大模型主线不直接相关。
+所以我把它定位为<strong>「工程规范能力」的证据，而不是 AI 能力的证据</strong>——
+它要证明的是：我能按企业级标准<strong>持续迭代</strong>一个项目，而不是只会做一次性原型。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">项目概况</h3>
+<p class="opacity-85 mb-4 leading-relaxed">
+一个企业级安全编排控制平面，通过稳定接口统一管理
+Asset（资产）、Knowledge（知识）、Assessment（评估）、Detection（检测）、Incident（事件）、
+Response（响应）、Notification（通知）、Worker、Sandbox（沙箱）、Telemetry（遥测）、
+Plugin（插件）、Playbook（剧本）等能力，并配套 RBAC、审批、审计与可观测性。
+</p>
+<ul class="list-disc pl-5 space-y-1 opacity-85 mb-4 text-sm">
+<li><strong>后端</strong>：FastAPI / SQLAlchemy / PostgreSQL / Redis</li>
+<li><strong>前端</strong>：React / TypeScript / Vite / Ant Design</li>
+<li><strong>架构约束</strong>：PostgreSQL 为唯一可信数据源；Worker 使用 lease/fencing 机制；<strong>插件不得直接访问平台持久化层</strong></li>
+<li><strong>许可证</strong>：Apache 2.0</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">⭐ 工程规范：这个项目最值得看的部分</h3>
+
+<h4 class="font-bold mt-4 mb-2">1. 质量闸门（零警告预算 + 覆盖率门槛）</h4>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`make install && make check      # 完整闸门
+
+uv run --project backend ruff check backend/app backend/tests benchmarks/phase22
+uv run --project backend pytest backend/tests -p no:cacheprovider
+npm ci --prefix frontend
+npm run lint --prefix frontend -- --max-warnings=0
+npm test --prefix frontend
+npm run build --prefix frontend`}</code></pre>
+</div>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong>Ruff + ESLint 采用零警告预算</strong>（<code>--max-warnings=0</code>）——不是"尽量没有警告"，而是有一条警告就失败</li>
+<li><strong>CI 强制后端覆盖率 90%</strong>（infra-less job）。文档还说明了 95% 目标的前提：需计入容器与 PostgreSQL 认证测试的贡献，而这部分只在认证工作流中产生</li>
+<li>此外还有 Compose / Helm 校验、Docker 构建、npm 生产依赖审计、Trivy 基线扫描</li>
+</ul>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>我为什么单独强调这点：</strong>很多项目写"我们重视代码质量"，
+但把标准写进 CI 并设成硬性失败条件，是另一回事。
+<strong>零警告预算</strong>和<strong>覆盖率门槛</strong>都是可被验证的约束，不是口号。
+</div>
+
+<h4 class="font-bold mt-4 mb-2">2. 发布与版本治理</h4>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li>遵循 <strong>Semantic Versioning 2.0.0</strong>，且 <code>1.0.0-rc1</code> 优先级低于正式 <code>1.0.0</code></li>
+<li><strong>已发布内容不可变</strong>：发布后如需更正，必须发新的 RC，而非就地修改</li>
+<li>1.0.0 之后：兼容的 bug 修复递增 PATCH，兼容的新增递增 MINOR，破坏性变更递增 MAJOR</li>
+<li>当前 1.0.5，公开 API 自 1.0.0 起<strong>冻结</strong>；1.0.1–1.0.5 仅含缺陷修复、安全与来源治理、认证工作和控制台重构</li>
+<li>每条发布线都在各自的 RC 锚点做过 <strong>fail-closed 认证</strong></li>
+</ul>
+
+<h4 class="font-bold mt-4 mb-2">3. 运维文档链完整</h4>
+<p class="text-sm opacity-85 mb-3">
+这是我见过的同类项目里文档最齐的之一，覆盖生产上线后的全生命周期：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`docs/deployment/production-checklist.md   生产检查清单
+docs/deployment/upgrade.md                升级
+docs/deployment/rollback.md               回滚
+docs/deployment/backup-restore.md         备份与恢复
+docs/operations-guide.md                  运维指南
+docs/runbook.md                           Runbook
+docs/faq.md                               FAQ
+docs/architecture.md / api-guide.md       架构与 API
+docs/plugin-development-guide.md          插件开发
+docs/sdk-guide.md                         SDK
+docs/adr/                                 架构决策记录
+docs/releases/ · CHANGELOG.md             发布记录与变更日志
+docs/known-issues.md · docs/roadmap.md    已知问题与路线图`}</code></pre>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">安全边界设计</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-85 border-l-4 border-green-500/60">
+生产环境的身份必须由 <strong>OIDC / 企业网关</strong>验证：网关需<strong>删除客户端自带的身份头</strong>，
+再注入 <code>X-CAP-User</code> 与 <code>X-CAP-Proxy-Secret</code>。
+项目原文态度很明确：<strong>"浏览器状态和隐藏按钮不是安全边界，后端 RBAC 才是权威。"</strong>
+生产启动会拒绝仓库内的占位密钥与 debug 模式。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">诚实声明（项目原文立场）</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-85 border border-[var(--line-divider)]">
+GA 认证是<strong>有范围限定的</strong>：它<strong>不覆盖</strong>生产环境的 EDR / WAF / 防火墙设备集成，
+这部分<strong>按设计保持 mock-only</strong>（详见 Known issues）。
+<p class="mt-2">
+把"我做到哪一步、没做到哪一步"写进 README 而不是留给使用者自己发现，
+是这个项目一贯的风格，也和我其他项目的做法一致。
+</p>
+</div>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>验证状态说明：</strong>本项目需要 Docker Compose（PostgreSQL、Redis 等多服务）才能完整运行，
+我在构建本站的环境中<strong>未能实机启动验证</strong>，因此标注为「代码审计通过」。
+以上质量闸门、版本策略与文档结构均来自仓库实际内容与文档，非我推测。
+</div>
+</section>
+
+<!-- ============ RailMind ============ -->
+<section id="railmind" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">RailMind</h2>
+<div class="text-sm opacity-70 mb-3">
+铁路票务实时数据智能平台 —— 采集 → 流计算 → 训练 → 在线预测 → 可视化
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.code.cls}`}>
+{badge.code.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/RailMind" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/RailMind</a>
+</p>
+
+<div class="border-l-4 border-amber-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm opacity-85">
+<strong>项目自带诚实声明（原文）：</strong>本项目是面向生产的工程化原型，在架构完整性和工程规范上达到生产级标准，
+但在数据规模和高可用部署上存在已知限制，<strong>不作为真实生产系统使用</strong>。
+本项目非 12306 官方系统、非购票/抢票工具，仅用于工程实践、研究、教学与技术展示。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">数据规模</h3>
+<div class="overflow-x-auto mb-4">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-4">指标</th><th class="text-right py-2">值</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">ticket_snapshot 记录数</td><td class="text-right py-2">3,213,412</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">覆盖路线数</td><td class="text-right py-2">400</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">覆盖车次数</td><td class="text-right py-2">3,795</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">座位类型数</td><td class="text-right py-2">10</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">数据时间范围</td><td class="text-right py-2">3 天（07-26 ~ 07-29）</td></tr>
+<tr><td class="py-2">特征数（无泄漏）</td><td class="text-right py-2">8</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">技术链路</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`12306 API
+  │  (curl_cffi TLS 指纹模拟 + APScheduler 定时采集 + PeakMode 调频)
+  ▼
+PostgreSQL ticket_snapshot（3.2M+ 记录，月度 RANGE 分区）
+  │  (EventPublisher)
+  ▼
+Kafka（railmind.ticket.raw · acks=all · idempotence · lz4）
+  │
+  ▼
+Flink Consumer（PyFlink 流计算）
+  │  特征计算: query_count_1h, demand_score, availability_rate ...
+  ▼
+PostgreSQL ticket_features_realtime（实时特征表）
+  │
+  ▼
+DatasetBuilder（extract_baseline_features → 无泄漏三分类目标）
+  │  0=no_ticket / 1=sold_out / 2=available
+  ▼
+Model Zoo（LR / RF / XGBoost / LightGBM）→ Model Registry → Serving Engine
+  │
+  ▼
+Prediction API（FastAPI）→ Frontend（Vue 3.5 + ECharts）`}</code></pre>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">⭐ 核心技术突破：数据泄漏的定位与修复</h3>
+<p class="opacity-85 mb-3 leading-relaxed">
+这是整个项目最有价值的部分，完整记录了「发现异常 → 定位根因 → 修复 → 重新评估」的工程闭环。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">第一步：识别虚假的完美</h4>
+<p class="opacity-85 mb-3">
+首个 Baseline（线性回归预测 <code>remaining_count</code>）在测试集上得到 <strong>R² = 1.0</strong>（RMSE ≈ 10⁻¹³，已达机器精度）。
+这是数据泄漏的明确信号，而非真实预测能力——<strong>能识别这一点本身就是关键能力</strong>，很多初学者会把它当成好结果上报。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">第二步：定位 3 个泄漏特征</h4>
+<div class="overflow-x-auto mb-3">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-4">泄漏特征</th><th class="text-left py-2">泄漏原因</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>previous_remaining</code></td><td class="py-2">首条记录以当前 <code>remaining_count</code> 回填</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-4"><code>remaining_change</code></td><td class="py-2">定义为 <code>remaining_count - previous_remaining</code>，可反推出目标</td></tr>
+<tr><td class="py-2 pr-4"><code>rolling_mean</code></td><td class="py-2">滚动窗口包含当前 <code>remaining_count</code> 值</td></tr>
+</tbody>
+</table>
+</div>
+<p class="opacity-85 mb-3">
+模型实际学到的只是一个恒等式 <code>remaining_count ≈ previous_remaining + remaining_change</code>，其余特征系数趋近于 0。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">第三步：修复</h4>
+<ul class="list-disc pl-5 space-y-1 opacity-85 mb-4">
+<li>目标由回归（<code>remaining_count</code>）改为<strong>三分类</strong>（<code>seat_status</code>：no_ticket / sold_out / available）</li>
+<li>移除 3 个泄漏特征</li>
+<li>以 Logistic Regression 作为可信基准重新训练</li>
+</ul>
+
+<h4 class="font-bold mt-4 mb-2">第四步：重新评估与模型对比</h4>
+<div class="overflow-x-auto mb-3">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-3">模型</th><th class="text-right py-2 pr-3">Accuracy</th><th class="text-right py-2 pr-3">F1 Macro</th><th class="text-right py-2 pr-3">ROC-AUC</th><th class="text-right py-2">训练耗时</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">Logistic Regression（基准）</td><td class="text-right py-2 pr-3">0.5425</td><td class="text-right py-2 pr-3">0.4841</td><td class="text-right py-2 pr-3">0.6912</td><td class="text-right py-2">70.98s</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">Random Forest</td><td class="text-right py-2 pr-3">0.7371</td><td class="text-right py-2 pr-3">0.7231</td><td class="text-right py-2 pr-3">0.8979</td><td class="text-right py-2">2.29s</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">XGBoost</td><td class="text-right py-2 pr-3">0.7474</td><td class="text-right py-2 pr-3">0.7381</td><td class="text-right py-2 pr-3">0.8985</td><td class="text-right py-2">0.68s</td></tr>
+<tr><td class="py-2"><strong>LightGBM（最优）</strong></td><td class="text-right py-2 pr-3"><strong>0.7556</strong></td><td class="text-right py-2 pr-3"><strong>0.7461</strong></td><td class="text-right py-2 pr-3"><strong>0.9065</strong></td><td class="text-right py-2"><strong>0.50s</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p class="opacity-85 mb-4 leading-relaxed">
+完整轨迹：<strong>虚假 R²=1.0 → 真实 ROC-AUC 0.6912（LR 基准）→ 0.9065（LightGBM 最优）</strong>。
+4 个模型在<strong>同一数据集（100K 采样）、同一特征（8 个无泄漏特征）、同一切分（80/20, random_state=42）</strong>下对比。
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm opacity-80 border border-[var(--line-divider)]">
+<strong>交叉验证（我在构建本页时做的算术核对）：</strong>
+70.98s ÷ 0.50s = 141.96 ≈ README 声称的"训练快 141×" ✓；
+(0.9065 − 0.6912) ÷ 0.6912 = 31.1% ≈ README 声称的"ROC-AUC 提升 +31.1%" ✓。
+两处派生数字与原数据精确自洽——这是真实实验记录而非编造数据的有力佐证。
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">其他工程要点</h3>
+<ul class="list-disc pl-5 space-y-2 opacity-85 mb-4">
+<li><strong>模型热替换：</strong>Serving Engine 支持运行时换模型，相同 <code>model_id</code> 热替换，<strong>API 全程无感知</strong>，无需修改任何调用方代码</li>
+<li><strong>工程规范：</strong>30 条 ADR（架构决策记录）、1570+ 后端测试、Docker Compose 14 服务（非 root + read_only 文件系统）</li>
+<li><strong>安全加固：</strong>JWT + RBAC、速率限制、安全响应头、审计日志、日志脱敏</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">性能指标</h3>
+<div class="overflow-x-auto mb-3">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-3">场景</th><th class="text-right py-2 pr-3">QPS</th><th class="text-right py-2 pr-3">P50</th><th class="text-right py-2 pr-3">P99</th><th class="text-right py-2">错误率</th>
+</tr></thead>
+<tbody class="opacity-85">
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">顺序（n=5000）</td><td class="text-right py-2 pr-3">184</td><td class="text-right py-2 pr-3">4.58ms</td><td class="text-right py-2 pr-3">11.39ms</td><td class="text-right py-2">0.00%</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2">并发（n=5000, 10 workers）</td><td class="text-right py-2 pr-3">65</td><td class="text-right py-2 pr-3">116.10ms</td><td class="text-right py-2 pr-3">352.34ms</td><td class="text-right py-2">0.00%</td></tr>
+<tr><td class="py-2">稳定性（5 分钟）</td><td class="text-right py-2 pr-3">193</td><td class="text-right py-2 pr-3">4.38ms</td><td class="text-right py-2 pr-3">8.47ms</td><td class="text-right py-2">0.00%</td></tr>
+</tbody>
+</table>
+</div>
+<p class="text-sm opacity-85 mb-4">
+推理性能：模型加载 1.60s · 首次（冷启动）6.66ms · <strong>平均（热）0.65ms</strong> · P99 1.75ms · 批量 100 样本 62.55ms。
+资源占用：CPU 平均 198%（约 2 核）、内存 291MB。
 </p>
 </section>
 
