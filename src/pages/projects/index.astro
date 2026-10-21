@@ -1,37 +1,102 @@
 ---
-import MainGridLayout from "../../layouts/MainGridLayout.astro";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
 
-const groups = [
+// 显式标注 verified 的取值，否则会被推断成 string，
+// 无法用它去索引 badge（badge 的键是固定联合类型）
+type VerifiedKey = "runtime" | "screenshots" | "code" | "fork";
+
+const groups: {
+	title: string;
+	desc: string;
+	projects: { id: string; name: string; tag: string; verified: VerifiedKey }[];
+}[] = [
 	{
 		title: "主线 · Agent 与大模型工程",
 		desc: "我的主要方向：从 Agent 运行时、协作、编排，到 Skill 的编译与蒸馏，再到 LLM 工具链与端侧应用。",
 		projects: [
-			{ id: "agentos", name: "AgentOS", tag: "Agent 运行时 — 规划/执行/验证/评审闭环", verified: "runtime" },
-			{ id: "clihive", name: "clihive", tag: "Agent 协作 — 多 Agent 窗口与投递追踪", verified: "screenshots" },
-			{ id: "autoflow-ai", name: "AutoFlow AI", tag: "Agent 编排 — 工作流引擎 + LLMOps", verified: "code" },
-			{ id: "skillc", name: "skillc", tag: "Skill 编译 — 一次编写，编译到各底盘", verified: "runtime" },
-			{ id: "crew-skill", name: "crew-skill", tag: "Skill 蒸馏 — 从 git 历史提取团队知识", verified: "runtime" },
-			{ id: "api-health-checker", name: "api-health-checker", tag: "LLM 工具链 — API 可用性与延迟检测", verified: "runtime" },
-			{ id: "doubao-wplus", name: "Doubao WPlus", tag: "端侧 AI — 浏览器内 AI 工作台", verified: "fork" },
+			{
+				id: "agentos",
+				name: "AgentOS",
+				tag: "Agent 运行时 — 规划/执行/验证/评审闭环",
+				verified: "runtime",
+			},
+			{
+				id: "clihive",
+				name: "clihive",
+				tag: "Agent 协作 — 多 Agent 窗口与投递追踪",
+				verified: "screenshots",
+			},
+			{
+				id: "autoflow-ai",
+				name: "AutoFlow AI",
+				tag: "Agent 编排 — 工作流引擎 + LLMOps",
+				verified: "code",
+			},
+			{
+				id: "skillc",
+				name: "skillc",
+				tag: "Skill 编译 — 一次编写，编译到各底盘",
+				verified: "runtime",
+			},
+			{
+				id: "crew-skill",
+				name: "crew-skill",
+				tag: "Skill 蒸馏 — 从 git 历史提取团队知识",
+				verified: "runtime",
+			},
+			{
+				id: "api-health-checker",
+				name: "api-health-checker",
+				tag: "LLM 工具链 — API 可用性与延迟检测",
+				verified: "runtime",
+			},
+			{
+				id: "doubao-wplus",
+				name: "Doubao WPlus",
+				tag: "端侧 AI — 浏览器内 AI 工作台",
+				verified: "fork",
+			},
 		],
 	},
 	{
 		title: "支撑 · 工程规范与数据能力",
 		desc: "证明我能按企业级标准持续迭代项目（大数据技术专业 + 工程规范实践）。",
 		projects: [
-			{ id: "cyber-agent-platform", name: "Cyber Agent Platform", tag: "工程规范 — 100 commits，质量闸门与发布治理", verified: "code" },
-			{ id: "railmind", name: "RailMind", tag: "数据 + ML — 采集/流计算/训练/预测全链路", verified: "code" },
+			{
+				id: "cyber-agent-platform",
+				name: "Cyber Agent Platform",
+				tag: "工程规范 — 100 commits，质量闸门与发布治理",
+				verified: "code",
+			},
+			{
+				id: "railmind",
+				name: "RailMind",
+				tag: "数据 + ML — 采集/流计算/训练/预测全链路",
+				verified: "code",
+			},
 		],
 	},
 ];
 
 const badge = {
-	runtime: { text: "✅ 已实机运行验证", cls: "bg-green-500/15 text-green-400 border-green-500/30" },
-	screenshots: { text: "📷 项目自带真实截图", cls: "bg-sky-500/15 text-sky-400 border-sky-500/30" },
-	code: { text: "🔍 代码审计通过", cls: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-	fork: { text: "🔧 二次开发（已标注来源）", cls: "bg-purple-500/15 text-purple-400 border-purple-500/30" },
+	runtime: {
+		text: "✅ 已实机运行验证",
+		cls: "bg-green-500/15 text-green-400 border-green-500/30",
+	},
+	screenshots: {
+		text: "📷 项目自带真实截图",
+		cls: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+	},
+	code: {
+		text: "🔍 代码审计通过",
+		cls: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+	},
+	fork: {
+		text: "🔧 二次开发（已标注来源）",
+		cls: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+	},
 };
 ---
 

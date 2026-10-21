@@ -3,30 +3,24 @@ import { onMount } from "svelte";
 
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
+// 复用内容层共享类型：原先这里自定义的 Post 接口要求 tags 必填，
+// 而 PostForList 的 data 来自 CollectionEntry，tags 是可选的，导致类型不匹配
+import type { PostForList } from "../utils/content-utils";
 import { getPostUrlBySlug } from "../utils/url-utils";
 
-export let tags: string[];
-export let categories: string[];
-export let sortedPosts: Post[] = [];
+// 无需外部传入：挂载后会从 URL query 重新求值，故给默认值
+export let tags: string[] = [];
+export let categories: string[] = [];
+export let sortedPosts: PostForList[] = [];
 
 const params = new URLSearchParams(window.location.search);
 tags = params.has("tag") ? params.getAll("tag") : [];
 categories = params.has("category") ? params.getAll("category") : [];
 const uncategorized = params.get("uncategorized");
 
-interface Post {
-	slug: string;
-	data: {
-		title: string;
-		tags: string[];
-		category?: string;
-		published: Date;
-	};
-}
-
 interface Group {
 	year: number;
-	posts: Post[];
+	posts: PostForList[];
 }
 
 let groups: Group[] = [];
@@ -37,7 +31,8 @@ function formatDate(date: Date) {
 	return `${month}-${day}`;
 }
 
-function formatTag(tagList: string[]) {
+// tags 在 frontmatter 里是可选的，给个默认值避免 undefined 时 map 崩溃
+function formatTag(tagList: string[] = []) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
