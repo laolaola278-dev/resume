@@ -2,20 +2,20 @@
 
 ## 基本信息
 
-| 项目 | 内容 |
-|------|------|
-| **姓名** | 谢键禧 |
-| **求职岗位** | AI 应用开发 / 数据分析（大模型方向） |
-| **期望城市** | 广州、深圳 |
-| **期望薪资** | 面议 |
-| **出生年月** | 2005.06 |
-| **性别** | 男 |
-| **民族** | 汉族 |
-| **婚姻状况** | 未婚 |
-| **现住城市** | 广东佛山高明 |
-| **电话** | 138****0485 |
-| **邮箱** | 138****0485@163.com |
-| **GitHub** | [github.com/laolaola278-dev](https://github.com/laolaola278-dev) |
+| 项目         | 内容                                                             |
+| ------------ | ---------------------------------------------------------------- |
+| **姓名**     | 谢键禧                                                           |
+| **求职岗位** | AI 应用开发 / 数据分析（大模型方向）                             |
+| **期望城市** | 广州、深圳                                                       |
+| **期望薪资** | 面议                                                             |
+| **出生年月** | 2005.06                                                          |
+| **性别**     | 男                                                               |
+| **民族**     | 汉族                                                             |
+| **婚姻状况** | 未婚                                                             |
+| **现住城市** | 广东佛山高明                                                     |
+| **电话**     | 138****0485                                                      |
+| **邮箱**     | 138****0485@163.com                                              |
+| **GitHub**   | [github.com/laolaola278-dev](https://github.com/laolaola278-dev) |
 
 ---
 
@@ -66,7 +66,6 @@
 ### AgentOS — 本地自主 Agent 运行时
 
 `TypeScript` `Node.js` `Next.js` `PostgreSQL` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/agentos)
-
 - **项目概述：** 一个可自主规划、执行、验证、评审并自我纠错的本地 Agent 运行时，用于自动完成软件工程任务。
 - **核心工作：**
   - 实现 **tool-calling 主循环**（对齐 Claude Code / Codex 核心范式）：模型每轮提出工具调用、观察结构化结果、自主决定下一步，直到达成目标
@@ -79,7 +78,6 @@
 ### clihive — CLI Agent 协作工作台
 
 `Node.js` `Electron` `node-pty` `xterm.js` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/clihive)
-
 - **项目概述：** 单窗口内并行托管多个 CLI Agent（codex / claude / opencode），提供共享记录、编排器与完整投递追踪，回答"那条消息到底送达了吗"。
 - **核心工作：**
   - 每个窗格是**真实 PTY**；根据命令行自动识别 CLI 类型（codex / claude / gemini / qwen / aider 等 13 种），匹配对应徽标与安全投递策略
@@ -91,7 +89,6 @@
 ### skillc — 多运行时 Skill 编译器
 
 `TypeScript` `Node.js` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/skillc)
-
 - **项目概述：** 写一份 skill 源码，编译分发到 Claude Code / Codex / DSH / Hermes / OpenClaw 等任意 Agent 底盘。
 - **核心工作：**
   - 实现 skill 源码解析器与多目标**发射器（emitters）**，一套源码产出各底盘的原生格式
@@ -102,7 +99,6 @@
 ### RailMind — 铁路票务实时数据智能平台
 
 `Python` `Kafka` `Flink` `LightGBM` `FastAPI` `Vue` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/RailMind)
-
 - **项目概述：** 覆盖 12306 数据采集 → 流式特征计算 → 模型训练 → 在线预测 → 可视化的全链路 ML Pipeline，共 14 个 Docker 服务。
 - **核心工作：**
   - 用 `curl_cffi` 做 TLS 指纹模拟采集 12306 数据，**321 万条**记录（400 条线路 / 3,795 个车次 / 10 种席别）
@@ -120,7 +116,6 @@
 ### api-health-checker — LLM API 健康检测服务
 
 `Python` `FastAPI` `SQLAlchemy` `SQLite` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/api-health-checker)
-
 - **项目概述：** 批量检测各家大模型 API Key 是否可用，并记录延迟、首 token 时间与可用模型列表。
 - **核心工作：**
   - 抽象**统一 Provider 接口**，接入 OpenAI / Anthropic / Gemini / DeepSeek / Moonshot 及任意 OpenAI-compatible 端点
@@ -131,7 +126,6 @@
 ### crew-skill — 从团队 git 历史蒸馏 Agent Skills
 
 `TypeScript` `Node.js` | 独立开发 | [GitHub](https://github.com/laolaola278-dev/crew-skill)
-
 - **项目概述：** 扫描仓库 git 历史，把团队约定（命名规范、评审关注点、测试习惯、部署手册、历史坑点）自动提炼成 Agent 可读的 SKILL.md，让新加入的 Agent 像资深员工一样上手。
 - **核心工作：**
   - 实现 commit 分类与规则提炼，**每条规则必须携带真实来源（具体 commit/文件）**；找不到证据的规则直接丢弃，且**丢弃数量总是如实报告**
@@ -143,7 +137,6 @@
 ### Doubao WPlus — 多宿主 AI 浏览器工作台（二次开发）
 
 `TypeScript` `浏览器扩展` `MCP` | 基于开源项目二次开发 | [GitHub](https://github.com/laolaola278-dev/doubao-wplus)
-
 - **项目来源（如实说明）：** 本项目**不是从零开发**，而是基于开源项目 **DeepSeek++**（原作者 zhu1090093659）做的二次开发。仓库早期 77 个提交属于上游项目，我在其基础上完成了 **16 个提交**的改造。
 - **我的改造：**
   - 将上游**硬编码单宿主**的逻辑抽象为 **HostAdapter 多宿主架构**，使插件同时支持豆包与 DeepSeek 两个宿主
