@@ -25,9 +25,15 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
 // https://astro.build/config
+// GitHub Pages 项目站点部署在子路径 /<repo> 下（本仓库名为 resume），
+// 因此 CI 构建时必须把 base 设为 "/resume"，否则线上资源会 404。
+// 但 base 在本地 dev 下同样生效，会把预览地址变成 http://localhost:4321/resume/
+// 而让预览面板打不开，所以只在 Actions 环境里切换。
+const isGitHubActions = process.env.GITHUB_ACTIONS === "true";
+
 export default defineConfig({
-	site: "https://resume.xjx111.xyz",
-	base: "/",
+	site: "https://laolaola278-dev.github.io",
+	base: isGitHubActions ? "/resume" : "/",
 	trailingSlash: "always",
 	integrations: [
 		tailwind({
