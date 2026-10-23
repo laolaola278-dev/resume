@@ -11,6 +11,15 @@ import {
 import { onMount } from "svelte";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
+// 显式声明本组件无 props。否则 Astro 会把它的 props 类型推断为
+// Record<string, never>，导致 Navbar 里的 client:only 指令通不过类型检查
+// 不写这段时 Astro 会把 props 推断成 Record<string, never>，
+// 导致 Navbar 里的 client:only 指令通不过类型检查。
+// 但不能用 {}（Biome 的 noBannedTypes）或空解构模式（noEmptyPattern），
+// 故显式标注为 Record<string, never> 并接收成下划线前缀变量（表示有意不使用）。
+type Props = Record<string, unknown>;
+let _props: Props = $props();
+
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE, AUTO_MODE];
 let mode: LIGHT_DARK_MODE = $state(AUTO_MODE);
 

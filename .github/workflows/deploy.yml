@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 合并到 main 后自动部署
+  push:
+    branches: [ main ]
+  # 允许在任意分支手动触发，便于预览未合并的改动
+  workflow_dispatch:
+
+# 排队部署，避免并发发布互相覆盖；但不取消进行中的部署
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 读取 package.json 的 packageManager 字段（pnpm@9.14.4）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # astro.config.mjs 会检测到 GITHUB_ACTIONS=true 并把 base 设为 /resume
+      - name: Build
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
