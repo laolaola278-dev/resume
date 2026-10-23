@@ -59,13 +59,13 @@ const skillGroups = [
 
 <MainGridLayout title="谢键禧 - 个人主页" description="AI 应用开发 · 大模型 Agent 方向">
 <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-<div class="card-base z-10 px-9 py-8 relative w-full">
+<div class="card-base z-10 px-9 py-8 relative w-full text-90">
 
 <!-- Hero -->
 <div class="mb-10">
 <h1 class="text-4xl font-bold mb-2">谢键禧</h1>
-<div class="text-lg opacity-80 mb-4">AI 应用开发 · 大模型 Agent 方向</div>
-<p class="opacity-85 leading-relaxed max-w-3xl">
+<div class="text-lg mb-4">AI 应用开发 · 大模型 Agent 方向</div>
+<p class="leading-relaxed max-w-3xl">
 大数据技术专业在读，但近两年的主要精力在大模型应用工程上，
 集中在 <strong>Agent 运行时</strong>与 <strong>Skill 工程</strong>两条线。
 我习惯用可验证的方式做项目——跑起来、做对照实验、把难看的数字也写清楚。
@@ -91,7 +91,7 @@ GitHub
 <div class="font-bold mb-3 text-sm">{g.label}</div>
 <div class="flex flex-wrap gap-1.5">
 {g.items.map((i) => (
-<span class="text-xs px-2 py-1 rounded bg-[var(--codeblock-bg)] opacity-85">{i}</span>
+<span class="text-xs px-2 py-1 rounded bg-[var(--codeblock-bg)]">{i}</span>
 ))}
 </div>
 </div>
@@ -100,13 +100,13 @@ GitHub
 
 <!-- 亮点项目 -->
 <h2 class="text-xl font-bold mb-1">亮点项目</h2>
-<p class="text-sm opacity-70 mb-4">完整 9 个项目见<a href="/projects/" class="text-[var(--primary)] underline ml-1">作品集</a></p>
+<p class="text-sm mb-4">完整 9 个项目见<a href="/projects/" class="text-[var(--primary)] underline ml-1">作品集</a></p>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 {highlights.map((h) => (
 <a href={h.href} class="block p-5 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
 <div class="font-bold mb-1">{h.name}</div>
-<div class="text-xs opacity-60 mb-3">{h.tag}</div>
-<p class="text-sm opacity-85 leading-relaxed">{h.desc}</p>
+<div class="text-xs mb-3">{h.tag}</div>
+<p class="text-sm leading-relaxed">{h.desc}</p>
 </a>
 ))}
 </div>
@@ -114,12 +114,12 @@ GitHub
 <!-- 验证说明 -->
 <div class="border-l-4 border-[var(--primary)] bg-[var(--codeblock-bg)] rounded-r-lg px-5 py-4">
 <p class="font-bold mb-2">关于这个站点</p>
-<p class="text-sm opacity-85 leading-relaxed">
+<p class="text-sm leading-relaxed">
 作品集里的每个项目都标注了<strong>验证状态</strong>：哪些我实机跑过并留下了运行记录，
 哪些是项目自带的真实截图，哪些只做了代码审计，哪些是二次开发。
 <strong>我没有为任何项目伪造运行截图。</strong>
 </p>
-<p class="text-sm opacity-85 mt-2">
+<p class="text-sm mt-2">
 本站基于 <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener" class="underline">Fuwari</a> 模板构建。
 </p>
 </div>
