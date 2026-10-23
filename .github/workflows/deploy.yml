@@ -39,6 +39,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # pagefind 的平台二进制是 optionalDependency，pnpm 缓存命中时可能漏装，
+      # 导致 build 里的 pagefind 步骤找不到可执行文件。这里主动校验并修复。
+      - name: Ensure pagefind binary
+        run: pnpm exec pagefind --version || pnpm rebuild @pagefind/linux-x64
+
       # astro.config.mjs 会检测到 GITHUB_ACTIONS=true 并把 base 设为 /resume
       - name: Build
         run: pnpm build
