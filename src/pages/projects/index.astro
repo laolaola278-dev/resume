@@ -113,7 +113,7 @@ const badge = {
 每项都比 README 更细地展开：架构决策、核心实现、使用流程与运行证据。
 </p>
 
-<div class="border-l-4 border-[var(--primary)] bg-[var(--codeblock-bg)] rounded-r-lg px-5 py-4 mb-8">
+<div class="border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-5 py-4 mb-8">
 <p class="font-bold mb-2">关于「验证状态」的说明</p>
 <p class="text-sm leading-relaxed">
 为了避免夸大，本页每个项目都标注了验证口径，含义如下：
@@ -320,7 +320,7 @@ task.failed  ✗ UNRECOVERABLE: verification failed: verify-1 exit=1
 
 task_mvaza5yz_232fa1a7  FAILED  p0  验证故意失败的任务`}</code></pre>
 </div>
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<div class="border-l-4 border-green-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
 <strong>结论：闸门是真的。</strong>执行器写文件成功了，但验证命令退出码为 1，
 程序直接判 <code>FAILED</code> 并进入 FIXING 让 debugger 诊断，
 <strong>根本没有进入 REVIEWING 阶段</strong>——没给「评审」发生的机会。
@@ -462,7 +462,7 @@ npm run screenshots`}</code></pre>
 </div>
 
 <h3 class="text-lg font-bold mt-6 mb-2">运行实例</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 以下截图来自项目仓库 <code>screenshots/</code> 目录，由 <code>scripts/screenshots.mjs</code> 启动真实 <code>HiveServer</code>、
 用 headless Chromium 驱动真实窗口、创建真实 PTY 窗格后自动捕获，每一步带 PASS/FAIL 断言，非人工摆拍。
 </div>
@@ -601,7 +601,7 @@ npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
 </table>
 </div>
 
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>我特别想保留的两处诚实声明（项目原文）：</strong>
 <ul class="list-disc pl-5 mt-2 space-y-1">
 <li>故障演练<strong>捕获了 2 个真实缺陷（已修复）</strong>——主动暴露问题而非只报喜</li>
@@ -676,7 +676,7 @@ skillc unpack  out.skillpack -o ./dir              # 反向导入回源码`}</co
 </ul>
 
 <h3 class="text-lg font-bold mt-6 mb-2">设计边界（项目自述）</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 无注册中心、无 GUI、无运行时、无组织功能——<strong>纯本地编译器</strong>，是技能作者与 harness 所有者之间的中立层。
 它翻译语义，不做安装分发（那是 <code>gh skill install</code> 的职责）。
 </div>
@@ -705,7 +705,7 @@ skillc unpack  out.skillpack -o ./dir              # 反向导入回源码`}</co
   · [hermes] .hermes/skills/deploy-qm/...  (5 files)
 ok 21 file(s) across 4 target(s) -> .skillc/plan.json`}</code></pre>
 </div>
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<div class="border-l-4 border-green-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
 <strong>我从产物里挖到的两个硬证据，证明它真的是「编译」而不是「复制」：</strong>
 <ul class="list-disc pl-5 mt-2 space-y-1">
 <li><strong>codex 目标额外产出了 <code>AGENTS.md (injection)</code></strong>，而其他三个目标全是 standalone 文件——产物结构本身就不同</li>
@@ -748,7 +748,7 @@ x refusing to sync: 1 file(s) changed outside skillc
 $ grep -c "我手工加的一行" .claude/skills/deploy-qm/SKILL.md
 1                          ← 手工修改完好保留，未被覆盖`}</code></pre>
 </div>
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<div class="border-l-4 border-green-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
 <strong>结论：承诺兑现。</strong>它精确识别出「这一个文件被外部改过」并<strong>整体拒绝同步</strong>（<code>x refusing to sync</code>），
 而不是自作主张覆盖用户的修改。其余 20 个文件正确标记为 <code>=</code>（unchanged，幂等跳过）。
 输出前缀语义：<code>+</code> 新建 · <code>=</code> 未变更 · <code>!</code> 外部修改告警 · <code>x</code> 拒绝。
@@ -808,7 +808,7 @@ actions.push({
 </p>
 
 <h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border-l-4 border-[var(--primary)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border-l-4 border-[var(--primary)]">
 <strong>项目自述的动机（原文大意）：</strong>每次有新的 Agent 加入仓库，它总是用错误的方式部署——
 因为部署清单只存在于资深开发的脑子里。命名规范在评审中被反复打回，
 因为这些规范从来没有被写在 Agent 能读到的地方。
@@ -852,7 +852,7 @@ time split: T=2026-06-25 (auto, latest-90d)  ·  0 training + 16 exam-window com
 PR reviews: skipped — default is 100% local
   (re-run with --with-pr to fetch GitHub review comments)`}</code></pre>
 </div>
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<div class="border-l-4 border-green-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
 <strong><code>dropped 1 rule (no evidence)</code> 这一行是关键。</strong>
 它证明「无证据的规则会被丢弃、且丢弃数如实报告」不是文档措辞，而是<strong>真实执行到的代码路径</strong>。
 同时 <code>PR reviews: skipped — default is 100% local</code> 也印证了隐私设计：默认绝不联网。
@@ -898,7 +898,7 @@ PR reviews: skipped — default is 100% local
 └─────────────────────────────────────┘
 weakest area: docs (0/20)`}</code></pre>
 </div>
-<div class="border-l-4 border-amber-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<div class="border-l-4 border-amber-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
 <strong>如实说明：我跑出来是 40/100，低于项目 README 声称的 67/100。</strong>
 <p class="mt-2">
 原因不神秘：README 的 67/100 是在 <code>pi</code> 仓库（<strong>300 commits</strong>）上测得，
@@ -930,7 +930,7 @@ weakest area: docs (0/20)`}</code></pre>
 这样就避免了「用训练数据当考题」的泄漏问题。
 项目原文还说了一句：<em>No cherry-picking — ugly numbers published too.</em>（不挑数据，难看的数字也照发。）
 </p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>与我另一个项目的呼应：</strong>这种对「数据泄漏」的敏感，和 RailMind 里识别出 R²=1.0 是假象、
 进而定位 3 个泄漏特征的思路是同一种工程直觉。
 两者都在处理同一个问题：<em>怎么知道一个好看的指标是真的。</em>
@@ -977,7 +977,7 @@ LLM API 健康检测服务 —— 批量验证各家大模型密钥可用性与�
 <a href="https://github.com/laolaola278-dev/api-health-checker" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/api-health-checker</a>
 </p>
 
-<div class="border-l-4 border-green-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
+<div class="border-l-4 border-green-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
 <strong>本页唯一「由我实机跑通」的项目。</strong>我在构建本站时，于隔离环境中安装依赖、
 真实启动了服务并逐个调用接口。下方所有响应均为真实返回值，未做任何修饰。
 </div>
@@ -1063,7 +1063,7 @@ INFO:     Application startup complete.`}</code></pre>
 }`}</code></pre>
 </div>
 
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>诚实记录：</strong>仓库内随附的 SQLite 数据库存有 <strong>26 条真实历史检测记录</strong>，
 时间跨度为 2026-06-14 13:59 至 2026-06-15 02:50（约半天），
 分布为 openai 19 条 / openai_compatible 4 条 / nonexistent 3 条。
@@ -1090,7 +1090,7 @@ Provider 列表、历史查询与输入校验等路径，未能完成一次真�
 <a href="https://github.com/laolaola278-dev/doubao-wplus" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/doubao-wplus</a>
 </p>
 
-<div class="border-l-4 border-purple-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
+<div class="border-l-4 border-purple-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
 <strong>关于项目来源，如实说明：</strong>本项目<strong>不是从零开发</strong>，
 而是基于开源项目 <strong>DeepSeek++</strong>（原作者 zhu1090093659）做的二次开发。
 仓库早期的 77 个提交属于上游 DeepSeek++ 项目（可见 <code>Release DeepSeek++ 0.4.0</code> ~ <code>0.4.3</code> 等提交），
@@ -1120,7 +1120,7 @@ Provider 列表、历史查询与输入校验等路径，未能完成一次真�
 </tbody>
 </table>
 </div>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>为什么值得单独讲：</strong>加一个「防硬编码」的守卫测试（no-host-hardcoding guard），
 意味着这不是一次性改完就完事，而是<strong>用测试把架构约束固化下来</strong>，防止后续开发把宿主逻辑又写回去。
 这是从「改功能」到「治理架构」的区别。
@@ -1161,7 +1161,7 @@ Provider 列表、历史查询与输入校验等路径，未能完成一次真�
 <a href="https://github.com/laolaola278-dev/cyber-agent-platform" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/cyber-agent-platform</a>
 </p>
 
-<div class="border-l-4 border-[var(--primary)] bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
+<div class="border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
 <strong>为什么收录它：</strong>这是我投入 commit 最多的项目（<strong>100 个提交且全部为本人</strong>），
 但它主打安全编排，与我的大模型主线不直接相关。
 所以我把它定位为<strong>「工程规范能力」的证据，而不是 AI 能力的证据</strong>——
@@ -1200,7 +1200,7 @@ npm run build --prefix frontend`}</code></pre>
 <li><strong>CI 强制后端覆盖率 90%</strong>（infra-less job）。文档还说明了 95% 目标的前提：需计入容器与 PostgreSQL 认证测试的贡献，而这部分只在认证工作流中产生</li>
 <li>此外还有 Compose / Helm 校验、Docker 构建、npm 生产依赖审计、Trivy 基线扫描</li>
 </ul>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>我为什么单独强调这点：</strong>很多项目写"我们重视代码质量"，
 但把标准写进 CI 并设成硬性失败条件，是另一回事。
 <strong>零警告预算</strong>和<strong>覆盖率门槛</strong>都是可被验证的约束，不是口号。
@@ -1236,7 +1236,7 @@ docs/known-issues.md · docs/roadmap.md    已知问题与路线图`}</code></pr
 </div>
 
 <h3 class="text-lg font-bold mt-6 mb-2">安全边界设计</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border-l-4 border-green-500/60">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border-l-4 border-green-500/60">
 生产环境的身份必须由 <strong>OIDC / 企业网关</strong>验证：网关需<strong>删除客户端自带的身份头</strong>，
 再注入 <code>X-CAP-User</code> 与 <code>X-CAP-Proxy-Secret</code>。
 项目原文态度很明确：<strong>"浏览器状态和隐藏按钮不是安全边界，后端 RBAC 才是权威。"</strong>
@@ -1244,7 +1244,7 @@ docs/known-issues.md · docs/roadmap.md    已知问题与路线图`}</code></pr
 </div>
 
 <h3 class="text-lg font-bold mt-6 mb-2">诚实声明（项目原文立场）</h3>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 GA 认证是<strong>有范围限定的</strong>：它<strong>不覆盖</strong>生产环境的 EDR / WAF / 防火墙设备集成，
 这部分<strong>按设计保持 mock-only</strong>（详见 Known issues）。
 <p class="mt-2">
@@ -1252,7 +1252,7 @@ GA 认证是<strong>有范围限定的</strong>：它<strong>不覆盖</strong>�
 是这个项目一贯的风格，也和我其他项目的做法一致。
 </p>
 </div>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>验证状态说明：</strong>本项目需要 Docker Compose（PostgreSQL、Redis 等多服务）才能完整运行，
 我在构建本站的环境中<strong>未能实机启动验证</strong>，因此标注为「代码审计通过」。
 以上质量闸门、版本策略与文档结构均来自仓库实际内容与文档，非我推测。
@@ -1272,7 +1272,7 @@ GA 认证是<strong>有范围限定的</strong>：它<strong>不覆盖</strong>�
 <a href="https://github.com/laolaola278-dev/RailMind" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/RailMind</a>
 </p>
 
-<div class="border-l-4 border-amber-500/60 bg-[var(--codeblock-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
+<div class="border-l-4 border-amber-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-6 text-sm">
 <strong>项目自带诚实声明（原文）：</strong>本项目是面向生产的工程化原型，在架构完整性和工程规范上达到生产级标准，
 但在数据规模和高可用部署上存在已知限制，<strong>不作为真实生产系统使用</strong>。
 本项目非 12306 官方系统、非购票/抢票工具，仅用于工程实践、研究、教学与技术展示。
@@ -1374,7 +1374,7 @@ Prediction API（FastAPI）→ Frontend（Vue 3.5 + ECharts）`}</code></pre>
 完整轨迹：<strong>虚假 R²=1.0 → 真实 ROC-AUC 0.6912（LR 基准）→ 0.9065（LightGBM 最优）</strong>。
 4 个模型在<strong>同一数据集（100K 采样）、同一特征（8 个无泄漏特征）、同一切分（80/20, random_state=42）</strong>下对比。
 </p>
-<div class="bg-[var(--codeblock-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
+<div class="bg-[var(--btn-regular-bg)] rounded-lg px-4 py-3 mb-4 text-sm border border-[var(--line-divider)]">
 <strong>交叉验证（我在构建本页时做的算术核对）：</strong>
 70.98s ÷ 0.50s = 141.96 ≈ README 声称的"训练快 141×" ✓；
 (0.9065 − 0.6912) ÷ 0.6912 = 31.1% ≈ README 声称的"ROC-AUC 提升 +31.1%" ✓。
