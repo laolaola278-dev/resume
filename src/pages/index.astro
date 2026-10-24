@@ -1,5 +1,6 @@
 ---
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { url } from "../utils/url-utils";
 
 const highlights = [
 	{
@@ -71,10 +72,10 @@ const skillGroups = [
 我习惯用可验证的方式做项目——跑起来、做对照实验、把难看的数字也写清楚。
 </p>
 <div class="flex flex-wrap gap-3 mt-5">
-<a href="/about/" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity">
+<a href={url('/about/')} class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity">
 查看简历
 </a>
-<a href="/projects/" class="px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
+<a href={url('/projects/')} class="px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
 作品集（9 个项目）
 </a>
 <a href="https://github.com/laolaola278-dev" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
@@ -100,10 +101,10 @@ GitHub
 
 <!-- 亮点项目 -->
 <h2 class="text-xl font-bold mb-1">亮点项目</h2>
-<p class="text-sm mb-4">完整 9 个项目见<a href="/projects/" class="text-[var(--primary)] underline ml-1">作品集</a></p>
+<p class="text-sm mb-4">完整 9 个项目见<a href={url('/projects/')} class="text-[var(--primary)] underline ml-1">作品集</a></p>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 {highlights.map((h) => (
-<a href={h.href} class="block p-5 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
+<a href={url(h.href)} class="block p-5 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
 <div class="font-bold mb-1">{h.name}</div>
 <div class="text-xs mb-3">{h.tag}</div>
 <p class="text-sm leading-relaxed">{h.desc}</p>
