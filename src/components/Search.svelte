@@ -8,10 +8,16 @@ import type { SearchResult } from "@/global";
 
 let keywordDesktop = "";
 let keywordMobile = "";
-let result: SearchResult[] = [];
+let desktopResult: SearchResult[] = [];
+let mobileResult: SearchResult[] = [];
 let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
+let desktopRequestId = 0;
+let mobileRequestId = 0;
+let result: SearchResult[] = [];
+
+$: result = keywordMobile ? mobileResult : desktopResult;
 
 const fakeResult: SearchResult[] = [
 	{
@@ -36,9 +42,9 @@ const togglePanel = () => {
 	panel?.classList.toggle("float-panel-closed");
 };
 
-const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
+const setPanelVisibility = (show: boolean): void => {
 	const panel = document.getElementById("search-panel");
-	if (!panel || !isDesktop) return;
+	if (!panel) return;
 
 	if (show) {
 		panel.classList.remove("float-panel-closed");
@@ -48,9 +54,20 @@ const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
 };
 
 const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
+	const requestId = isDesktop ? ++desktopRequestId : ++mobileRequestId;
+	const isLatestRequest = () =>
+		requestId === (isDesktop ? desktopRequestId : mobileRequestId);
+	const setResults = (nextResult: SearchResult[]) => {
+		if (isDesktop) {
+			desktopResult = nextResult;
+		} else {
+			mobileResult = nextResult;
+		}
+	};
+
 	if (!keyword) {
-		setPanelVisibility(false, isDesktop);
-		result = [];
+		setResults([]);
+		setPanelVisibility(false);
 		return;
 	}
 
@@ -75,18 +92,23 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 			console.error("Pagefind is not available in production environment.");
 		}
 
-		result = searchResults;
-		setPanelVisibility(result.length > 0, isDesktop);
+		if (!isLatestRequest()) return;
+		setResults(searchResults);
+		setPanelVisibility(searchResults.length > 0);
 	} catch (error) {
+		if (!isLatestRequest()) return;
 		console.error("Search error:", error);
-		result = [];
-		setPanelVisibility(false, isDesktop);
+		setResults([]);
+		setPanelVisibility(false);
 	} finally {
-		isSearching = false;
+		if (isLatestRequest()) {
+			isSearching = false;
+		}
 	}
 };
 
 onMount(() => {
+	let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
 	const initializeSearch = () => {
 		initialized = true;
 		pagefindLoaded =
@@ -97,6 +119,16 @@ onMount(() => {
 		if (keywordDesktop) search(keywordDesktop, true);
 		if (keywordMobile) search(keywordMobile, false);
 	};
+	const handlePagefindReady = () => {
+		console.log("Pagefind ready event received.");
+		initializeSearch();
+	};
+	const handlePagefindLoadError = () => {
+		console.warn(
+			"Pagefind load error event received. Search functionality will be limited.",
+		);
+		initializeSearch();
+	};
 
 	if (import.meta.env.DEV) {
 		console.log(
@@ -104,25 +136,23 @@ onMount(() => {
 		);
 		initializeSearch();
 	} else {
-		document.addEventListener("pagefindready", () => {
-			console.log("Pagefind ready event received.");
-			initializeSearch();
-		});
-		document.addEventListener("pagefindloaderror", () => {
-			console.warn(
-				"Pagefind load error event received. Search functionality will be limited.",
-			);
-			initializeSearch(); // Initialize with pagefindLoaded as false
-		});
+		document.addEventListener("pagefindready", handlePagefindReady);
+		document.addEventListener("pagefindloaderror", handlePagefindLoadError);
 
 		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-		setTimeout(() => {
+		fallbackTimer = setTimeout(() => {
 			if (!initialized) {
 				console.log("Fallback: Initializing search after timeout.");
 				initializeSearch();
 			}
 		}, 2000); // Adjust timeout as needed
 	}
+
+	return () => {
+		document.removeEventListener("pagefindready", handlePagefindReady);
+		document.removeEventListener("pagefindloaderror", handlePagefindLoadError);
+		if (fallbackTimer) clearTimeout(fallbackTimer);
+	};
 });
 
 $: if (initialized && keywordDesktop) {

@@ -3,6 +3,17 @@
 @layer components {
     .card-base {
         @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
+        border: 1px solid color-mix(in srgb, var(--line-divider) 72%, transparent);
+        box-shadow: 0 18px 44px -34px rgb(0 0 0 / 0.65);
+    }
+
+    .card-base:hover {
+        box-shadow: 0 22px 48px -32px rgb(0 0 0 / 0.72);
+    }
+
+    :where(a, button, input, textarea, select):focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
     }
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition;

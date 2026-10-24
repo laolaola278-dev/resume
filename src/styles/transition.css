@@ -1,9 +1,74 @@
 /* Page transition animations with Swup */
 html.is-changing .transition-swup-fade {
-    @apply transition-all duration-200
+    @apply transition-all duration-300 ease-out
 }
 html.is-animating .transition-swup-fade {
-    @apply opacity-0 translate-y-4
+    @apply opacity-0 translate-y-3 scale-[0.995]
+}
+
+/* Scroll-triggered entrance motion for content blocks. The observer adds
+   .is-visible once an element enters the viewport. */
+.scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+}
+
+html.has-scroll-reveal .scroll-reveal {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+}
+
+html.has-scroll-reveal .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* A thin progress indicator gives long portfolio pages a clear sense of place. */
+#reading-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 3px;
+    z-index: 100;
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 45%, white));
+    box-shadow: 0 0 14px color-mix(in srgb, var(--primary) 55%, transparent);
+    transition: transform 120ms linear;
+}
+
+.navbar-scrolled > #navbar {
+    box-shadow: 0 16px 34px -28px rgb(0 0 0 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.is-changing .transition-swup-fade {
+        transition: none;
+    }
+
+    html.is-animating .transition-swup-fade {
+        opacity: 1;
+        transform: none;
+    }
+
+    html.has-scroll-reveal .scroll-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .onload-animation {
+        opacity: 1;
+        animation: none;
+    }
+
+    #reading-progress {
+        transition: none;
+    }
 }
 
 /* Fade-in animations for components */

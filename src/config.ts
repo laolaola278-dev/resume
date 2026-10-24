@@ -58,7 +58,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "assets/images/profile-avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "谢键禧",
 	bio: "AI 应用开发 · 大模型 Agent 方向 | 大数据技术专业 | 广州/深圳",
 	links: [

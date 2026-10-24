@@ -59,11 +59,11 @@ const skillGroups = [
 ---
 
 <MainGridLayout title="谢键禧 - 个人主页" description="AI 应用开发 · 大模型 Agent 方向">
-<div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-<div class="card-base z-10 px-9 py-8 relative w-full text-90">
+<div class="home-shell flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+<div class="card-base home-panel scroll-reveal z-10 px-5 md:px-9 py-7 md:py-8 relative w-full text-90">
 
 <!-- Hero -->
-<div class="mb-10">
+<div class="home-hero mb-10">
 <h1 class="text-4xl font-bold mb-2">谢键禧</h1>
 <div class="text-lg mb-4">AI 应用开发 · 大模型 Agent 方向</div>
 <p class="leading-relaxed max-w-3xl">
@@ -72,23 +72,23 @@ const skillGroups = [
 我习惯用可验证的方式做项目——跑起来、做对照实验、把难看的数字也写清楚。
 </p>
 <div class="flex flex-wrap gap-3 mt-5">
-<a href={url('/about/')} class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity">
+<a href={url('/about/')} class="hero-action hero-action-primary px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity">
 查看简历
 </a>
-<a href={url('/projects/')} class="px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
+<a href={url('/projects/')} class="hero-action px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
 作品集（9 个项目）
 </a>
-<a href="https://github.com/laolaola278-dev" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
+<a href="https://github.com/laolaola278-dev" target="_blank" rel="noopener" class="hero-action px-4 py-2 rounded-lg border border-[var(--line-divider)] text-sm font-bold hover:border-[var(--primary)] transition-colors">
 GitHub
 </a>
 </div>
 </div>
 
 <!-- 核心能力 -->
-<h2 class="text-xl font-bold mb-4">核心能力</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+<h2 class="home-section-title text-xl font-bold mb-4">核心能力</h2>
+<div class="home-skills grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 {skillGroups.map((g) => (
-<div class="p-4 rounded-lg border border-[var(--line-divider)]">
+<div class="skill-card scroll-reveal p-4 rounded-lg border border-[var(--line-divider)]">
 <div class="font-bold mb-3 text-sm">{g.label}</div>
 <div class="flex flex-wrap gap-1.5">
 {g.items.map((i) => (
@@ -100,11 +100,11 @@ GitHub
 </div>
 
 <!-- 亮点项目 -->
-<h2 class="text-xl font-bold mb-1">亮点项目</h2>
+<h2 class="home-section-title text-xl font-bold mb-1">亮点项目</h2>
 <p class="text-sm mb-4">完整 9 个项目见<a href={url('/projects/')} class="text-[var(--primary)] underline ml-1">作品集</a></p>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 {highlights.map((h) => (
-<a href={url(h.href)} class="block p-5 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
+<a href={url(h.href)} class="highlight-card scroll-reveal block p-5 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
 <div class="font-bold mb-1">{h.name}</div>
 <div class="text-xs mb-3">{h.tag}</div>
 <p class="text-sm leading-relaxed">{h.desc}</p>
@@ -113,7 +113,7 @@ GitHub
 </div>
 
 <!-- 验证说明 -->
-<div class="border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-5 py-4">
+<div class="site-note scroll-reveal border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-5 py-4">
 <p class="font-bold mb-2">关于这个站点</p>
 <p class="text-sm leading-relaxed">
 作品集里的每个项目都标注了<strong>验证状态</strong>：哪些我实机跑过并留下了运行记录，
@@ -128,3 +128,245 @@ GitHub
 </div>
 </div>
 </MainGridLayout>
+
+<style>
+    .home-shell {
+        --home-ink: #f7f8fb;
+        --home-muted: rgb(213 219 231 / 0.72);
+        --home-line: rgb(255 255 255 / 0.14);
+        --home-surface: rgb(255 255 255 / 0.065);
+        --home-accent: oklch(0.78 0.16 var(--hue));
+        background: #0b0e14;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        box-shadow: 0 36px 90px -48px rgb(3 6 12 / 0.9);
+        isolation: isolate;
+    }
+
+    .home-panel {
+        overflow: hidden;
+        color: var(--home-ink);
+        background:
+            radial-gradient(circle at 84% 0%, color-mix(in srgb, var(--home-accent) 28%, transparent), transparent 28rem),
+            linear-gradient(145deg, #111722 0%, #0b0e14 58%, #0d121b 100%);
+        border: 0;
+        box-shadow: none;
+    }
+
+    .home-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.24;
+        background-image:
+            linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+        background-size: 4rem 4rem;
+        mask-image: linear-gradient(135deg, black, transparent 68%);
+        pointer-events: none;
+    }
+
+    .home-panel::after {
+        content: "";
+        position: absolute;
+        top: -8rem;
+        right: -5rem;
+        z-index: 0;
+        width: 22rem;
+        height: 22rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--home-accent) 15%, transparent);
+        filter: blur(3rem);
+        pointer-events: none;
+    }
+
+    .home-panel > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-hero {
+        position: relative;
+        z-index: 1;
+        max-width: 62rem;
+        padding: clamp(1rem, 3vw, 2.5rem) 0 clamp(2.5rem, 7vw, 6rem);
+    }
+
+    .home-hero::before {
+        content: "";
+        display: block;
+        width: 4rem;
+        height: 0.25rem;
+        margin-bottom: 2rem;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--home-accent), transparent);
+    }
+
+    .home-hero h1 {
+        max-width: 11ch;
+        color: var(--home-ink);
+        font-size: clamp(3.6rem, 11vw, 8.5rem);
+        font-weight: 800;
+        letter-spacing: -0.085em;
+        line-height: 0.88;
+        text-wrap: balance;
+    }
+
+    .home-hero > div:nth-child(2) {
+        margin-top: 1.5rem;
+        color: var(--home-accent);
+        font-size: clamp(1rem, 2vw, 1.35rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .home-panel .home-hero p,
+    .home-panel .site-note p {
+        color: var(--home-muted);
+    }
+
+    .home-section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--home-ink);
+        letter-spacing: -0.03em;
+    }
+
+    .home-section-title::before {
+        content: "";
+        width: 0.35rem;
+        height: 1.35rem;
+        border-radius: 999px;
+        background: var(--home-accent);
+        box-shadow: 0 0 1.25rem color-mix(in srgb, var(--home-accent) 55%, transparent);
+    }
+
+    .home-skills .skill-card,
+    .highlight-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 100%;
+        border: 1px solid var(--home-line);
+        background: var(--home-surface);
+        backdrop-filter: blur(1rem);
+        transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .home-skills .skill-card::after,
+    .highlight-card::after {
+        content: "";
+        position: absolute;
+        inset: auto -20% -65% auto;
+        width: 10rem;
+        height: 10rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--home-accent) 14%, transparent);
+        filter: blur(2rem);
+        transition: transform 300ms ease;
+    }
+
+    .home-skills .skill-card:hover,
+    .highlight-card:hover {
+        transform: translateY(-0.45rem);
+        border-color: color-mix(in srgb, var(--home-accent) 70%, var(--home-line));
+        background: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1.5rem 3rem -2rem rgb(0 0 0 / 0.9);
+    }
+
+    .home-skills .skill-card:hover::after,
+    .highlight-card:hover::after {
+        transform: translate(-1.5rem, -1.5rem) scale(1.25);
+    }
+
+    .home-skills .skill-card > div:first-child,
+    .highlight-card .font-bold {
+        position: relative;
+        z-index: 1;
+        color: var(--home-ink);
+    }
+
+    .home-skills .skill-card span {
+        position: relative;
+        z-index: 1;
+        color: var(--home-muted);
+        background: rgb(255 255 255 / 0.08);
+        border: 1px solid rgb(255 255 255 / 0.08);
+    }
+
+    .highlight-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .highlight-card::before {
+        content: "↗";
+        position: absolute;
+        top: 1rem;
+        right: 1.25rem;
+        color: var(--home-accent);
+        font-size: 1.25rem;
+        transition: transform 220ms ease;
+    }
+
+    .highlight-card:hover::before {
+        transform: translate(0.2rem, -0.2rem);
+    }
+
+    .highlight-card .text-xs,
+    .highlight-card .text-sm {
+        position: relative;
+        z-index: 1;
+        color: var(--home-muted);
+    }
+
+    .site-note {
+        border-color: var(--home-accent);
+        background: linear-gradient(110deg, rgb(255 255 255 / 0.09), color-mix(in srgb, var(--home-accent) 12%, transparent));
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    .hero-action {
+        border-color: var(--home-line);
+        transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .hero-action:hover {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--home-accent) 70%, var(--home-line));
+        background: rgb(255 255 255 / 0.1);
+    }
+
+    .hero-action-primary {
+        border-color: var(--home-accent);
+        background: var(--home-accent);
+        color: #0a0d12;
+        box-shadow: 0 1rem 2.5rem -1.75rem var(--home-accent);
+    }
+
+    @media (max-width: 640px) {
+        .home-hero h1 {
+            font-size: clamp(3.4rem, 21vw, 6rem);
+        }
+
+        .home-hero > div:nth-child(2) {
+            letter-spacing: 0.02em;
+            text-transform: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-skills .skill-card,
+        .highlight-card,
+        .hero-action {
+            transition: none;
+        }
+
+        .home-skills .skill-card:hover,
+        .highlight-card:hover,
+        .hero-action:hover {
+            transform: none;
+        }
+    }
+</style>

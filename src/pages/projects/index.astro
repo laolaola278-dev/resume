@@ -1,6 +1,4 @@
 ---
-import I18nKey from "../../i18n/i18nKey";
-import { i18n } from "../../i18n/translation";
 import MainGridLayout from "../../layouts/MainGridLayout.astro";
 import { url } from "../../utils/url-utils";
 
@@ -136,8 +134,8 @@ const badge = {
 ---
 
 <MainGridLayout title="作品集" description="项目深度技术介绍">
-<div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-<div class="card-base z-10 px-9 py-6 relative w-full text-90">
+<div class="projects-shell flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+<div class="card-base projects-panel z-10 px-5 md:px-9 py-6 relative w-full text-90">
 
 <h1 class="text-3xl font-bold mb-3">作品集</h1>
 
@@ -148,7 +146,7 @@ const badge = {
 每项都比 README 更细地展开：架构决策、核心实现、使用流程与运行证据。
 </p>
 
-<div class="border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-5 py-4 mb-8">
+<div class="portfolio-note scroll-reveal border-l-4 border-[var(--primary)] bg-[var(--btn-regular-bg)] rounded-r-lg px-5 py-4 mb-8">
 <p class="font-bold mb-2">关于「验证状态」的说明</p>
 <p class="text-sm leading-relaxed">
 为了避免夸大，本页每个项目都标注了验证口径，含义如下：
@@ -164,14 +162,14 @@ const badge = {
 </p>
 </div>
 
-<h2 class="text-xl font-bold mb-4">项目一览</h2>
+<h2 class="project-overview-title text-xl font-bold mb-4">项目一览</h2>
 {groups.map((g) => (
 <div class="mb-8">
 <h3 class="font-bold mb-1">{g.title}</h3>
 <p class="text-sm mb-3">{g.desc}</p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 {g.projects.map((p) => (
-<a href={`#${p.id}`} class="block p-4 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
+<a href={`#${p.id}`} class="portfolio-card scroll-reveal block p-4 rounded-lg border border-[var(--line-divider)] hover:border-[var(--primary)] transition-colors">
 <div class="font-bold">{p.name}</div>
 <div class="text-sm mt-1">{p.tag}</div>
 <div class={`text-xs mt-2 inline-block px-2 py-0.5 rounded border ${badge[p.verified].cls}`}>
@@ -184,7 +182,7 @@ const badge = {
 ))}
 
 <!-- ============ AgentOS ============ -->
-<section id="agentos" class="mb-16 scroll-mt-24">
+<section id="agentos" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">AgentOS</h2>
 <div class="text-sm mb-3">
 本地自主 Agent 运行时 —— 规划、执行、验证、评审、自我纠错
@@ -426,7 +424,7 @@ REVIEWING 阶段——只有独立评审员给出 PASS，且在隔离 worktree �
 </section>
 
 <!-- ============ clihive ============ -->
-<section id="clihive" class="mb-16 scroll-mt-24">
+<section id="clihive" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">clihive</h2>
 <div class="text-sm mb-3">
 CLI Agent 协作工作台 —— 一个窗口托管多个 Agent，共享记录 + 完整投递追踪
@@ -550,7 +548,7 @@ npm run screenshots`}</code></pre>
 </section>
 
 <!-- ============ AutoFlow AI ============ -->
-<section id="autoflow-ai" class="mb-16 scroll-mt-24">
+<section id="autoflow-ai" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">AutoFlow AI</h2>
 <div class="text-sm mb-3">
 企业级 AI Agent 编排平台 —— 可视化工作流 + 持久化队列 + LLMOps 可观测
@@ -647,7 +645,7 @@ npx tsx scripts/demo/failure-showcase.ts`}</code></pre>
 </section>
 
 <!-- ============ skillc ============ -->
-<section id="skillc" class="mb-16 scroll-mt-24">
+<section id="skillc" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">skillc</h2>
 <div class="text-sm mb-3">
 多运行时 Skill 编译器 —— 一次编写，编译到所有 Agent 底盘
@@ -830,7 +828,7 @@ actions.push({
 </section>
 
 <!-- ============ crew-skill ============ -->
-<section id="crew-skill" class="mb-16 scroll-mt-24">
+<section id="crew-skill" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">crew-skill</h2>
 <div class="text-sm mb-3">
 从团队 git 历史蒸馏 Agent Skills —— 让新 Agent 像资深员工一样上手
@@ -1000,7 +998,7 @@ weakest area: docs (0/20)`}</code></pre>
 </section>
 
 <!-- ============ api-health-checker ============ -->
-<section id="api-health-checker" class="mb-16 scroll-mt-24">
+<section id="api-health-checker" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">api-health-checker</h2>
 <div class="text-sm mb-3">
 LLM API 健康检测服务 —— 批量验证各家大模型密钥可用性与延迟
@@ -1113,7 +1111,7 @@ Provider 列表、历史查询与输入校验等路径，未能完成一次真�
 </section>
 
 <!-- ============ doubao-wplus ============ -->
-<section id="doubao-wplus" class="mb-16 scroll-mt-24">
+<section id="doubao-wplus" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">Doubao WPlus</h2>
 <div class="text-sm mb-3">
 多宿主 AI 增强浏览器扩展 —— 把豆包网页版扩展成带记忆、Skill、MCP、自动化的 AI 工作台
@@ -1524,7 +1522,7 @@ python make_video.py script.json --bgm your_music.mp3`}</code></pre>
 </section>
 
 <!-- ============ cyber-agent-platform ============ -->
-<section id="cyber-agent-platform" class="mb-16 scroll-mt-24">
+<section id="cyber-agent-platform" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">Cyber Agent Platform (CAP)</h2>
 <div class="text-sm mb-3">
 企业级安全编排控制平面 —— 本项目主要作为「工程规范能力」的证据
@@ -1635,7 +1633,7 @@ GA 认证是<strong>有范围限定的</strong>：它<strong>不覆盖</strong>�
 </section>
 
 <!-- ============ RailMind ============ -->
-<section id="railmind" class="mb-16 scroll-mt-24">
+<section id="railmind" class="project-section mb-16 scroll-mt-24 scroll-reveal">
 <h2 class="text-2xl font-bold mb-1">RailMind</h2>
 <div class="text-sm mb-3">
 铁路票务实时数据智能平台 —— 采集 → 流计算 → 训练 → 在线预测 → 可视化
@@ -1942,3 +1940,212 @@ FAILED (failures=1, errors=2, skipped=4)`}</code></pre>
 </div>
 </div>
 </MainGridLayout>
+
+<style>
+    .projects-shell {
+        --portfolio-ink: #f7f8fb;
+        --portfolio-muted: rgb(213 219 231 / 0.68);
+        --portfolio-line: rgb(255 255 255 / 0.13);
+        --portfolio-surface: rgb(255 255 255 / 0.055);
+        --portfolio-accent: oklch(0.78 0.16 var(--hue));
+        counter-reset: project-section;
+        background: #0b0e14;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        box-shadow: 0 36px 90px -48px rgb(3 6 12 / 0.9);
+        isolation: isolate;
+    }
+
+    .projects-panel {
+        counter-reset: project-card;
+        overflow: hidden;
+        color: var(--portfolio-ink);
+        background:
+            radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--portfolio-accent) 22%, transparent), transparent 26rem),
+            linear-gradient(145deg, #111722 0%, #0b0e14 60%, #0e131c 100%);
+        border: 0;
+        box-shadow: none;
+    }
+
+    .projects-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.22;
+        background-image:
+            linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+        background-size: 4rem 4rem;
+        mask-image: linear-gradient(145deg, black, transparent 64%);
+        pointer-events: none;
+    }
+
+    .projects-panel > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .projects-panel > h1 {
+        color: var(--portfolio-ink);
+        font-size: clamp(2.75rem, 7vw, 5.5rem);
+        letter-spacing: -0.07em;
+        line-height: 0.95;
+    }
+
+    .projects-panel > p {
+        max-width: 58rem;
+        color: var(--portfolio-muted);
+        font-size: clamp(1rem, 1.6vw, 1.2rem);
+        line-height: 1.85;
+    }
+
+    .project-overview-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: var(--portfolio-ink);
+        letter-spacing: -0.04em;
+    }
+
+    .project-overview-title::before {
+        content: "";
+        width: 0.35rem;
+        height: 1.4rem;
+        border-radius: 999px;
+        background: var(--portfolio-accent);
+        box-shadow: 0 0 1.2rem color-mix(in srgb, var(--portfolio-accent) 55%, transparent);
+    }
+
+    .portfolio-note {
+        border-color: var(--portfolio-accent);
+        color: var(--portfolio-ink);
+        background: linear-gradient(110deg, rgb(255 255 255 / 0.08), color-mix(in srgb, var(--portfolio-accent) 12%, transparent));
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    .portfolio-note p,
+    .portfolio-note li {
+        color: var(--portfolio-muted);
+    }
+
+    .portfolio-note strong {
+        color: var(--portfolio-ink);
+    }
+
+    .portfolio-card {
+        position: relative;
+        min-height: 9rem;
+        border: 1px solid var(--portfolio-line);
+        color: var(--portfolio-ink);
+        background: var(--portfolio-surface);
+        backdrop-filter: blur(1rem);
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease;
+    }
+
+    .portfolio-card::before {
+        counter-increment: project-card;
+        content: counter(project-card, decimal-leading-zero);
+        position: absolute;
+        top: 0.85rem;
+        right: 1rem;
+        color: color-mix(in srgb, var(--portfolio-accent) 78%, white);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+    }
+
+    .portfolio-card:hover {
+        transform: translateY(-0.35rem);
+        border-color: color-mix(in srgb, var(--portfolio-accent) 70%, var(--portfolio-line));
+        background: rgb(255 255 255 / 0.1);
+        box-shadow: 0 1.5rem 3rem -2rem rgb(0 0 0 / 0.9);
+    }
+
+    .portfolio-card > div {
+        position: relative;
+        z-index: 1;
+    }
+
+    .portfolio-card > div:first-child {
+        color: var(--portfolio-ink);
+        font-size: 1.05rem;
+    }
+
+    .portfolio-card > div:nth-child(2) {
+        color: var(--portfolio-muted);
+    }
+
+    .project-section {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(1.25rem, 3vw, 2.5rem);
+        border: 1px solid var(--portfolio-line);
+        border-radius: 1.5rem;
+        background: linear-gradient(145deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.025));
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+    }
+
+    .project-section::before {
+        counter-increment: project-section;
+        content: counter(project-section, decimal-leading-zero);
+        position: absolute;
+        top: 1.2rem;
+        right: 1.5rem;
+        color: color-mix(in srgb, var(--portfolio-accent) 72%, white);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+    }
+
+    .project-section h2 {
+        max-width: 12ch;
+        color: var(--portfolio-ink);
+        font-size: clamp(1.75rem, 4vw, 3rem);
+        letter-spacing: -0.06em;
+        line-height: 0.98;
+    }
+
+    .project-section h3,
+    .project-section h4 {
+        color: var(--portfolio-ink);
+        letter-spacing: -0.025em;
+    }
+
+    .project-section p,
+    .project-section li,
+    .project-section td,
+    .project-section th {
+        color: var(--portfolio-muted);
+    }
+
+    .project-section strong,
+    .project-section code {
+        color: var(--portfolio-ink);
+    }
+
+    .project-section pre,
+    .project-section table {
+        border-color: var(--portfolio-line);
+    }
+
+    @media (max-width: 640px) {
+        .project-section {
+            border-radius: 1.15rem;
+        }
+
+        .project-section::before {
+            top: 1rem;
+            right: 1rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .portfolio-card {
+            transition: none;
+        }
+
+        .portfolio-card:hover {
+            transform: none;
+        }
+    }
+</style>
