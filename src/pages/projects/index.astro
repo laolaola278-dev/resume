@@ -6,7 +6,7 @@ import { url } from "../../utils/url-utils";
 
 // 显式标注 verified 的取值，否则会被推断成 string，
 // 无法用它去索引 badge（badge 的键是固定联合类型）
-type VerifiedKey = "runtime" | "screenshots" | "code" | "fork";
+type VerifiedKey = "runtime" | "screenshots" | "code" | "fork" | "audit";
 
 const groups: {
 	title: string;
@@ -59,6 +59,18 @@ const groups: {
 				tag: "端侧 AI — 浏览器内 AI 工作台",
 				verified: "fork",
 			},
+			{
+				id: "newgpt",
+				name: "GPT++ (newgpt)",
+				tag: "Agent 运行时 — Chrome MV3 × Rust 原生宿主，21 项本地工具",
+				verified: "runtime",
+			},
+			{
+				id: "viral-writer-skill",
+				name: "viral-writer-skill",
+				tag: "Skill 工程 — 带可执行工具链的多平台内容生成 Skill",
+				verified: "screenshots",
+			},
 		],
 	},
 	{
@@ -76,6 +88,12 @@ const groups: {
 				name: "RailMind",
 				tag: "数据 + ML — 采集/流计算/训练/预测全链路",
 				verified: "code",
+			},
+			{
+				id: "screenforge",
+				name: "ScreenForge",
+				tag: "系统编程 — C++20 + GPU 零拷贝录屏管线",
+				verified: "audit",
 			},
 		],
 	},
@@ -98,6 +116,10 @@ const badge = {
 		text: "🔧 二次开发（已标注来源）",
 		cls: "bg-purple-500/15 text-purple-400 border-purple-500/30",
 	},
+	audit: {
+		text: "🔍 静态审计通过 · 未实机验证",
+		cls: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+	},
 };
 ---
 
@@ -109,7 +131,7 @@ const badge = {
 
 <p class="mb-6">
 我在 GitHub 上共有 31 个公开项目，方向集中在大模型 Agent 工程、Skill 体系与数据智能。
-本页收录 <strong>9 个代表性项目</strong>，按<strong>两条能力主线</strong>编排：
+本页收录 <strong>12 个代表性项目</strong>，按<strong>两条能力主线</strong>编排：
 主线是 Agent 与大模型工程，支撑线是工程规范与数据能力。
 每项都比 README 更细地展开：架构决策、核心实现、使用流程与运行证据。
 </p>
@@ -1149,6 +1171,225 @@ Provider 列表、历史查询与输入校验等路径，未能完成一次真�
 </p>
 </section>
 
+<!-- ============ GPT++ (newgpt) ============ -->
+<section id="newgpt" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">GPT++ (newgpt)</h2>
+<div class="text-sm mb-3">
+Chrome MV3 扩展 × Rust 原生宿主 —— 让网页端模型安全调用本地 21 项能力
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.runtime.cls}`}>
+{badge.runtime.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/newgpt" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/newgpt</a>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">解决什么问题</h3>
+<p class="mb-4 leading-relaxed">
+网页版 ChatGPT 好用，但它<strong>碰不到本地环境</strong>——读不了工作区文件、跑不了命令、看不了 git 历史。
+市面上的方案要么要求把 API Key 交给第三方中转，要么把代码传到云端。
+GPT++ 的做法是：在浏览器隔离上下文与本机原生进程之间建立一条
+<strong>强类型、工作区沙箱隔离、五域权限门控</strong>的双向通道，
+无后端服务、无遥测上报，所有状态、项目记忆与权限配置 <strong>100% 留存在本机</strong>。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">系统构成</h3>
+<ul class="list-disc pl-5 space-y-2 mb-4">
+<li><strong>浏览器扩展层</strong>（WXT + React 19 + TypeScript，约 5,900 行）：Closed Shadow DOM 内隔离的状态胶囊、Side Panel 审批卡片、Options 白名单配置</li>
+<li><strong>Rust 原生宿主</strong>（<code>native-host/</code>，约 1,600 行）：经 Chrome Native Messaging 提供文件系统、受控 Shell、原生 Git 与 MCP stdio 桥接</li>
+<li><strong>五域权限引擎</strong>：<code>READ</code> / <code>WRITE</code> / <code>EXECUTE</code> / <code>GIT</code> / <code>BROWSER</code>，支持会话级授权与一键中断</li>
+<li><strong>测试</strong>：121 个 TypeScript + 18 个 Rust 测试，GitHub Actions CI 全绿（我核对过仓库，数字属实）</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">21 项本地能力矩阵</h3>
+<div class="overflow-x-auto mb-4">
+<table class="w-full text-sm border-collapse">
+<thead><tr class="border-b border-[var(--line-divider)]">
+<th class="text-left py-2 pr-3">领域</th><th class="text-left py-2 pr-3">工具</th><th class="text-left py-2">执行层 / 权限域</th>
+</tr></thead>
+<tbody>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Filesystem</td><td class="py-2 pr-3"><code>fs_list_dir</code> <code>fs_read_file</code> <code>fs_write_file</code> <code>fs_search</code></td><td class="py-2">Rust · READ / WRITE</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Shell</td><td class="py-2 pr-3"><code>shell_exec</code></td><td class="py-2">Rust · EXECUTE</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Native Git</td><td class="py-2 pr-3"><code>git_status</code> <code>git_diff</code> <code>git_log</code> <code>git_stage</code> <code>git_commit</code></td><td class="py-2">Rust · GIT</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Memory</td><td class="py-2 pr-3"><code>memory_remember</code> <code>memory_recall</code> <code>memory_forget</code></td><td class="py-2">MV3 · safe</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Skills</td><td class="py-2 pr-3"><code>skill_list</code> <code>skill_activate</code></td><td class="py-2">MV3 · safe</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">MCP Bridge</td><td class="py-2 pr-3"><code>mcp_list_servers</code> <code>mcp_list_tools</code> <code>mcp_call_tool</code></td><td class="py-2">Rust · EXECUTE</td></tr>
+<tr class="border-b border-[var(--line-divider)]"><td class="py-2 pr-3">Browser</td><td class="py-2 pr-3"><code>browser_list_tabs</code></td><td class="py-2">MV3 · BROWSER</td></tr>
+<tr><td class="py-2 pr-3">Diagnostics</td><td class="py-2 pr-3"><code>native_echo</code> <code>demo_echo</code></td><td class="py-2">Rust / MV3 · safe</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">关键设计</h3>
+
+<h4 class="font-bold mt-4 mb-2">1. 双层工作区沙箱：符号链接逃逸防护</h4>
+<p class="mb-3">
+网页端的任何 DOM 内容都被视为不可信输入。Extension 侧先归一化相对路径，
+Rust 侧再用 <code>std::fs::canonicalize</code> 解析真实路径做二次校验，
+彻底阻断 <code>../</code> 穿越、前缀同名碰撞与符号链接逃逸。
+下面是 <code>native-host/src/sandbox.rs</code> 的核心逻辑：
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`if raw_path.contains('\\0') {
+    return Err("path contains illegal null byte".to_string());
+}
+
+if joined.exists() {
+    let canon = fs::canonicalize(&joined)
+        .map_err(|e| format!("cannot canonicalize \\"{effective}\\": {e}"))?;
+    if !canon.starts_with(canon_root) {
+        return Err(format!(
+            "access denied: \\"{effective}\\" escapes workspace root"
+        ));
+    }
+    return Ok(canon);
+}
+
+// 目标尚不存在：回溯到最深的已存在祖先，canonicalize 后
+// 校验剩余新路径段只含 Normal 分量（拒绝 . / .. 逃逸）
+for seg in &missing_tail {
+    for comp in Path::new(seg).components() {
+        if !matches!(comp, Component::Normal(_)) {
+            return Err(format!(
+                "illegal path segment in target path \\"{effective}\\""
+            ));
+        }
+    }
+}`}</code></pre>
+</div>
+<p class="text-sm mb-4">
+最难的一处是<strong>目标文件尚不存在</strong>时（如写入新文件）——此时无法直接 canonicalize。
+这里的处理是回溯到最深的已存在祖先做校验，再逐段检查新增路径分量，
+确保 <code>..</code> 不会藏在不存在的路径段里绕过检查。
+</p>
+
+<h4 class="font-bold mt-4 mb-2">2. 确定性 Agent 状态机</h4>
+<p class="mb-3">
+<code>AgentLoopController</code> 由显式状态转移表驱动，任何非法跨态跃迁都会被 <code>AgentStateMachine</code> 立即拒绝。
+这一点和我写 AgentOS 时的判断一致：<strong>自动化系统的状态必须是可观测、可追问的</strong>，
+而不是埋在日志里的一句 error。
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`IDLE ──▶ OBSERVING ──▶ TOOL_DETECTED ──▶ WAITING_PERMISSION ──▶ EXECUTING
+             ▲                                                      │
+             └─────────── CONTINUING ◀──── INJECTING_RESULT ◀───────┘`}</code></pre>
+</div>
+
+<h4 class="font-bold mt-4 mb-2">3. 零命令夹带的 MCP 白名单</h4>
+<p class="mb-3">
+调用 <code>mcp_call_tool</code> 时模型<strong>只能传 serverId</strong>，
+实际可执行文件与参数完全由用户在 Options 页显式配置。
+这样即使提示词被注入，也无法触发任意程序执行——这是 MCP 生态里一个很实际的攻击面。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">实机运行截图</h3>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/01-architecture.png')} alt="GPT++ 四层信任边界架构图" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">四层权限递增的隔离区域：不可信 DOM 文本永远无法绕过校验直达系统能力</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/02-hero-live-session.png')} alt="GPT++ 实机会话：ChatGPT 网页侧直接调用本地工具" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">实机会话：不离开 ChatGPT 网页界面，直接驱动本地工作区</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/03-sidepanel-streaming.png')} alt="Side Panel 审批挂起态：WRITE 权限请求等待确认" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">写操作进入挂起态：Allow Once / 会话授权 / Deny 三选一，模型无法绕过</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/04-sidepanel-inspector.png')} alt="多步 Git 与文件系统闭环完成态" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">多步 Git / FS 闭环完成态：五域状态栏 + 本地 Skills + 21 项活跃工具</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/05-tool-loop-closeup.png')} alt="工具调用循环特写" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">工具调用循环特写：模型提出调用 → 审批 → Rust 执行 → 结果回填对话</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/newgpt/06-options-confinement.png')} alt="Options 页的工作区边界与 MCP 白名单配置" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">Options 页：工作区根目录约束与 MCP Server 白名单配置</figcaption>
+</figure>
+
+</section>
+
+<!-- ============ viral-writer-skill ============ -->
+<section id="viral-writer-skill" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">viral-writer-skill</h2>
+<div class="text-sm mb-3">
+带可执行工具链的多平台内容生成 Skill —— 一个主题，小红书 / 抖音 / 知乎一条龙
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.screenshots.cls}`}>
+{badge.screenshots.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/viral-writer-skill" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/viral-writer-skill</a>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">和纯提示词 Skill 的关键差别</h3>
+<p class="mb-4 leading-relaxed">
+大多数内容生成 Skill 只做一件事：<strong>教 AI 怎么写</strong>，最后交给模型"再画一遍图"。
+这个 Skill 的不同在于——<strong>它带可执行工具，产物是成品文件</strong>：
+卡片由 Pillow 确定性渲染成真实 PNG，视频自动 TTS 配音、按配音时长对齐字幕并加转场。
+模型负责文案与结构，确定性代码负责像素与时间轴。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">能力</h3>
+<ul class="list-disc pl-5 space-y-2 mb-4">
+<li><strong>小红书</strong>：5 个标题候选（标注公式）+ 正文 + 8–10 标签 + 6 张 1080×1440 卡片（PNG）</li>
+<li><strong>抖音</strong>：黄金 3 秒钩子脚本 + 配文 + 竖屏成片（TTS 配音 / 字幕对齐 / 转场）</li>
+<li><strong>知乎</strong>：1500–3000 字结构化长文（含实测表格与诚实声明段落）</li>
+<li><strong>一鱼多吃</strong>：同一主题按平台语感重写，明确禁止一稿多发</li>
+<li><strong>移动端 H5</strong>：纯静态网页，浏览器直连 LLM API + Canvas 本地渲染卡片</li>
+</ul>
+
+<h3 class="text-lg font-bold mt-6 mb-2">渲染链路</h3>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`# 卡片：JSON 规格 → 1080x1440 PNG（Pillow 渲染，零浏览器依赖）
+python render_cards.py cards_dir/ out_dir/
+
+# 视频：TTS 配音 → 按配音时长对齐字幕 → 转场 → 竖屏成片
+python make_video.py script.json --bgm your_music.mp3`}</code></pre>
+</div>
+<p class="text-sm mb-4">
+有一个细节值得说：<code>render_cards.py</code> 会按队列探测各平台的中文字体，
+<strong>找不到任何 CJK 字体时明确报错退出</strong>，而不是渲染出一堆方框继续交付；
+找不到 emoji 字体时才降级剥离继续。
+我这次想实机跑一遍时正好缺中文字体，脚本如预期报错——这个"该失败就失败"的设计我是认可的。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">产物示例</h3>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/viral-writer-skill/01-card-cover.png')} alt="小红书封面卡片：奶油底配大 emoji 与红色高亮" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">封面卡（cover 版式）：奶油底 + 大 emoji + 粗体大字 + 红色高亮</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/viral-writer-skill/02-card-list.png')} alt="清单式卡片：条目配图标与备注" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">清单卡（list 版式）：条目 + 图标 + 备注 + 总结高亮</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/viral-writer-skill/03-card-flow.png')} alt="流程式卡片：分步骤呈现" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">流程卡（flow 版式）：分步呈现，适合教程类内容</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/viral-writer-skill/04-douyin-scene1.png')} alt="抖音竖屏视频分镜一" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">抖音竖屏成片分镜 · 场景一</figcaption>
+</figure>
+
+<figure class="rounded-lg overflow-hidden border border-[var(--line-divider)] mb-4">
+<img src={url('/projects/viral-writer-skill/05-douyin-scene2.png')} alt="抖音竖屏视频分镜二" loading="lazy" />
+<figcaption class="text-xs px-3 py-2">抖音竖屏成片分镜 · 场景二（字幕按 TTS 配音时长对齐）</figcaption>
+</figure>
+
+</section>
+
 <!-- ============ cyber-agent-platform ============ -->
 <section id="cyber-agent-platform" class="mb-16 scroll-mt-24">
 <h2 class="text-2xl font-bold mb-1">Cyber Agent Platform (CAP)</h2>
@@ -1406,6 +1647,81 @@ Prediction API（FastAPI）→ Frontend（Vue 3.5 + ECharts）`}</code></pre>
 推理性能：模型加载 1.60s · 首次（冷启动）6.66ms · <strong>平均（热）0.65ms</strong> · P99 1.75ms · 批量 100 样本 62.55ms。
 资源占用：CPU 平均 198%（约 2 核）、内存 291MB。
 </p>
+</section>
+
+<!-- ============ ScreenForge ============ -->
+<section id="screenforge" class="mb-16 scroll-mt-24">
+<h2 class="text-2xl font-bold mb-1">ScreenForge</h2>
+<div class="text-sm mb-3">
+Windows 原生高性能录屏 —— C++20 + GPU 零拷贝管线
+</div>
+<div class={`text-xs mb-4 inline-block px-2 py-1 rounded border ${badge.audit.cls}`}>
+{badge.audit.text}
+</div>
+<p class="mb-4">
+<a href="https://github.com/laolaola278-dev/ScreenForge" target="_blank" rel="noopener" class="text-[var(--primary)] underline">github.com/laolaola278-dev/ScreenForge</a>
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">它是什么</h3>
+<p class="mb-4 leading-relaxed">
+一个 Windows 原生视频录制程序，核心思路是<strong>全程让数据留在 GPU 上</strong>：
+从屏幕捕获到编码不经 CPU 回读，避免每帧在显存与内存之间来回搬运。
+规模约 7,300 行 C++（28 个 <code>.cpp</code> + 35 个 <code>.h</code> + 16 个 <code>CMakeLists.txt</code>），
+依赖 Qt6 / Direct3D11 / WGC / NVENC / WASAPI / FFmpeg。
+</p>
+<div class="bg-[var(--codeblock-bg)] rounded-lg p-4 mb-4 overflow-x-auto">
+<pre class="text-xs leading-relaxed"><code>{`WGC 屏幕捕获 ──┐
+               ├─→ FrameQueue(SPSC 无锁队列) ─→ NVENC 编码 ─→ MP4 封装
+WASAPI 音频 ───┘
+(QPC 统一时钟)    (60fps Pacing，满丢最旧)    (GPU 零拷贝)    (fragmented MP4)`}</code></pre>
+</div>
+<p class="text-sm mb-4">
+几个值得说的点：采集与编码之间用 <strong>SPSC 无锁队列</strong>解耦（单生产者单消费者，避免锁竞争抖动）；
+音视频用 <strong>QPC 统一时钟</strong>对齐，避免长时间录制后音画漂移；
+队列满时<strong>丢弃最旧帧</strong>而不是阻塞采集线程，保证实时性优先。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">为什么放进作品集</h3>
+<p class="mb-4 leading-relaxed">
+坦白说，它和我主线的「大模型 Agent 工程」不在一条线上。我放进来有两个理由：
+一是它证明我<strong>能处理系统级复杂度</strong>——GPU 管线、无锁并发、音视频同步、硬件编码器，
+这些都不是靠调 API 能糊过去的；
+二是它的<strong>工程过程管理</strong>比很多 AI 项目更扎实，下面这点尤其重要。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">必须说清楚：它没有在真机上跑过</h3>
+<div class="border-l-4 border-amber-500/60 bg-[var(--btn-regular-bg)] rounded-r-lg px-4 py-3 mb-4 text-sm">
+<p class="mb-2">
+项目的验收报告里，5 项硬件测试<strong>全部标记为 <code>NOT_TESTED</code></strong>，并附了这样一段声明：
+</p>
+<p class="mb-0 italic">
+「当前生成环境为浏览器沙盒，无法执行 Windows API / MSVC / FFmpeg / NVENC / GUI。
+本报告不填写任何模拟数据，全部项目标记 NOT_TESTED，待真机执行后回填。」
+</p>
+</div>
+<p class="mb-4 leading-relaxed">
+也就是说：<strong>这个项目的正确性只经过静态审计，没有被编译运行验证过。</strong>
+我可以用环境受限来解释，但没法用任何方式宣称它"能跑"。
+所以我给它标的是「静态审计通过 · 未实机验证」，而不是「代码审计通过」。
+</p>
+<p class="mb-4 leading-relaxed">
+我仍然把它放进来，是因为<strong>面对无法验证的事情选择如实标注</strong>，
+本身就是一个值得展示的工程习惯——一个敢把 5 项测试全写成 <code>NOT_TESTED</code> 的人，
+写「已验证」的时候大概是可信的。
+</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">工程过程管理</h3>
+<ul class="list-disc pl-5 space-y-2 mb-4">
+<li><strong>渐进式阶段开发</strong>：Phase 0–8 逐阶段交付，每阶段产出可编译的真实代码，GitHub Actions 自动构建</li>
+<li><strong>代码真实性审计</strong>（<code>CODE_REALITY_AUDIT.md</code>）：静态扫描 + 调用链逐级核对，区分「编译链实际引用」与「历史冻结（保留未编译）」，明确标出哪些文件已移出构建</li>
+<li><strong>占位实现审计</strong>（<code>CODE_STUB_REPORT.md</code>）：结论为<strong>无 TODO/FIXME/占位实现</strong>，且接口-实现-调用方三者一致；同时注明「本环境无法执行 MSVC，以下为静态审计结论」</li>
+<li><strong>代码冻结</strong>：<code>CODE_FREEZE.md</code> 固化 Release Candidate 状态，历史工程保留但不参与构建</li>
+</ul>
+<p class="text-sm mb-4">
+仓库里共有 12 份工程报告（构建、依赖、清理、冻结、审计、验收、发布候选各一份体系）。
+这种"把过程本身也当作交付物"的做法，是我从 cyber-agent-platform 的零告警预算那里学来的。
+</p>
+
 </section>
 
 </div>
