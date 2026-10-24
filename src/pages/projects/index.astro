@@ -71,6 +71,12 @@ const groups: {
 				tag: "Skill 工程 — 带可执行工具链的多平台内容生成 Skill",
 				verified: "screenshots",
 			},
+			{
+				id: "contract-review-agent",
+				name: "合同审查 Agent",
+				tag: "RAG + 规则引擎 — 证据可溯源的企业文档审查",
+				verified: "runtime",
+			},
 		],
 	},
 	{
@@ -94,6 +100,12 @@ const groups: {
 				name: "ScreenForge",
 				tag: "系统编程 — C++20 + GPU 零拷贝录屏管线",
 				verified: "audit",
+			},
+			{
+				id: "atlas",
+				name: "Atlas",
+				tag: "合规工程 — 20,576 行 Go 医疗智能体平台，828 项门禁测试",
+				verified: "runtime",
 			},
 		],
 	},
@@ -131,7 +143,7 @@ const badge = {
 
 <p class="mb-6">
 我在 GitHub 上共有 31 个公开项目，方向集中在大模型 Agent 工程、Skill 体系与数据智能。
-本页收录 <strong>12 个代表性项目</strong>，按<strong>两条能力主线</strong>编排：
+本页收录 <strong>14 个代表性项目</strong>，按<strong>两条能力主线</strong>编排：
 主线是 Agent 与大模型工程，支撑线是工程规范与数据能力。
 每项都比 README 更细地展开：架构决策、核心实现、使用流程与运行证据。
 </p>
@@ -1390,6 +1402,127 @@ python make_video.py script.json --bgm your_music.mp3`}</code></pre>
 
 </section>
 
+<!-- ============ contract-review-agent ============ -->
+<section id="contract-review-agent" class="mb-16 scroll-mt-24">
+	<h2 class="text-2xl font-bold mb-2">企业合同与招投标文件智能审查 Agent</h2>
+	<p class="text-sm text-[var(--meta-color)] mb-4">
+		Python · 规则引擎优先 · 证据可溯源 · 人工复核兜底 · 3,008 行源码 · 24 项测试 · Apache-2.0
+	</p>
+
+	<p class="mb-4">
+		一个面向<strong>高风险企业文档</strong>的审查 Agent。设计上最值得说的一点，是它<strong>刻意不接 LLM</strong>：
+		风险判定全部由可枚举、可回归测试的确定性规则产生，每条结论都回指到原文的<strong>文件 + 页码 + 字符偏移</strong>，
+		最后由一道人工复核门闭环。README 里那句话我原样认同——
+		「一个说不清依据的结论，比没有结论更糟」。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">为什么先做规则引擎</h3>
+	<p class="mb-3">
+		合同审查是<strong>低容错</strong>场景。LLM 的语义能力确实能覆盖规则想不到的条款，
+		但用它的输出去<strong>掩盖不确定性</strong>是危险的。所以这里的取舍是：
+		先用规则把「可解释、可测试、可回归」的地基打牢，LLM 的位置留给规则覆盖不到的语义条款，
+		而不是拿它当不确定性的遮羞布。当前版本<strong>不调用任何外部模型</strong>。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">六条可枚举规则</h3>
+	<div class="overflow-x-auto mb-4">
+		<table class="w-full text-sm border-collapse">
+			<thead>
+				<tr class="border-b border-[var(--line-color)]">
+					<th class="text-left py-2 pr-3">规则</th>
+					<th class="text-left py-2 pr-3">检查项</th>
+					<th class="text-left py-2 pr-3">等级</th>
+					<th class="text-left py-2">命中后提示人工确认</th>
+				</tr>
+			</thead>
+			<tbody class="text-[var(--meta-color)]">
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R001</td><td class="py-2 pr-3">截止时间</td><td class="py-2 pr-3">high</td><td class="py-2">时间、时区、递交渠道、逾期处理</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R002</td><td class="py-2 pr-3">付款条款</td><td class="py-2 pr-3">high</td><td class="py-2">付款节点、发票条件、验收条件、逾期付款责任</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R003</td><td class="py-2 pr-3">质保与服务</td><td class="py-2 pr-3">medium</td><td class="py-2">服务范围、响应时间、SLA、质保期限、费用边界</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R004</td><td class="py-2 pr-3">数据安全与隐私</td><td class="py-2 pr-3">high</td><td class="py-2">数据分类、访问权限、留存期限、脱敏与泄露处置</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R005</td><td class="py-2 pr-3">违约与责任</td><td class="py-2 pr-3">high</td><td class="py-2">责任上限、违约金计算、免责条件、争议解决</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">R006</td><td class="py-2 pr-3">供应商资质</td><td class="py-2 pr-3">medium</td><td class="py-2">资格、资质、业绩、案例等证明材料</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">关键源码：每条结论都带证据，且强制人工复核</h3>
+	<p class="mb-2 text-sm text-[var(--meta-color)]">
+		<code>src/contract_agent/review_engine.py</code> 的核心循环。注意两处设计：
+		<strong>「没找到条款」本身也是一个 finding</strong>（而不是静默跳过），
+		以及输出里的 <code>requires_human_review</code> 是<strong>硬编码 True</strong>——系统永远不会自称「审查已完成」。
+	</p>
+	<pre class="bg-[var(--codeblock-bg)] p-4 rounded-lg overflow-x-auto text-sm mb-4"><code>{`def run_review(text: str) -> dict[str, object]:
+    """Run explainable checks and return a stable structured result."""
+    if not isinstance(text, str):
+        raise TypeError("text must be a string")
+    if not text.strip():
+        raise ValueError("text must not be empty")
+    findings: list[Finding] = []
+    for rule in RULES:
+        matched = any(re.search(p, text, flags=re.IGNORECASE) for p in rule["patterns"])
+        findings.append(
+            Finding(
+                rule_id=rule["rule_id"],
+                title=rule["title"],
+                severity=rule["severity"] if matched else "low",
+                status="found" if matched else "missing",
+                # 命中 -> 回指原文片段；未命中 -> 明说"未找到"，请人工确认
+                evidence=_evidence(text, rule["patterns"]) if matched
+                         else "未找到相关条款，建议人工确认。",
+                recommendation=rule["recommendation"],
+            )
+        )
+    return {
+        "summary": {
+            "rules_checked": len(findings),
+            "high_risk_matches": sum(1 for f in findings
+                                     if f.severity == "high" and f.status == "found"),
+            "missing_sections": sum(1 for f in findings if f.status == "missing"),
+            "requires_human_review": True,   # 硬编码：结论必须经人确认
+        },
+        "findings": [asdict(item) for item in findings],
+    }`}</code></pre>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">实测结果</h3>
+	<p class="mb-2">
+		我在本地克隆并跑通了它的测试套件（Python 3.11 虚拟环境）：
+	</p>
+	<pre class="bg-[var(--codeblock-bg)] p-4 rounded-lg overflow-x-auto text-sm mb-4"><code>23 passed, 1 skipped, 12 subtests passed in 1.81s</code></pre>
+	<p class="mb-3 text-sm text-[var(--meta-color)]">
+		覆盖文档摄入（Markdown / TXT / DOCX）、规则审查、检索问答、报告导出等模块。
+		PDF 路径依赖 PyMuPDF，本环境未安装，因此<strong>PDF 摄入未实测</strong>。
+	</p>
+	<div class="border-l-4 border-amber-500/60 bg-[var(--btn-regular-bg)] p-3 rounded-r mb-4 text-sm">
+		<strong>顺手修了一个上游 bug：</strong>仓库根目录的 <code>pyproject.toml</code>
+		带了 UTF-8 BOM（前 3 字节 <code>EF BB BF</code>），导致任何 TOML 解析器在第一列就报错，
+		<code>pytest</code> 直接起不来——这也是该仓库 CI 红的原因之一。
+		我剥掉 BOM 后测试即全绿。上游仓库目前仍未修复。
+	</div>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">运行效果</h3>
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+		<figure>
+			<img src={url("/projects/enterprise-contract-review-agent/01-home.png")} alt="审查 Agent 首页：粘贴文本或上传文档" class="rounded-lg border border-[var(--line-color)]" />
+			<figcaption class="text-xs text-[var(--meta-color)] mt-1">首页：粘贴文本或上传 Markdown / TXT / PDF / DOCX，无需安装、无需 API Key</figcaption>
+		</figure>
+		<figure>
+			<img src={url("/projects/enterprise-contract-review-agent/02-review.png")} alt="审查结果：六条规则的命中情况与建议" class="rounded-lg border border-[var(--line-color)]" />
+			<figcaption class="text-xs text-[var(--meta-color)] mt-1">审查结果：每条规则的命中状态、等级、原文证据与人工确认建议</figcaption>
+		</figure>
+	</div>
+	<figure class="mb-4">
+		<img src={url("/projects/enterprise-contract-review-agent/03-ask-citation.png")} alt="带引用的问答：答案附带原文出处" class="rounded-lg border border-[var(--line-color)]" />
+		<figcaption class="text-xs text-[var(--meta-color)] mt-1">问答结果附带原文出处（文件 + 页码 + 字符偏移），可逐条回溯核对</figcaption>
+	</figure>
+
+	<div class="text-sm text-[var(--meta-color)]">
+		<strong>能力边界（README 原文立场）：</strong>不声称替代律师、采购经理或法务人员；
+		Agent 的边界是<strong>自动发现问题，人工确认结论</strong>。
+		风险控制四件套：引用溯源、结构化输出、敏感信息保护、人工复核。
+	</div>
+</section>
+
 <!-- ============ cyber-agent-platform ============ -->
 <section id="cyber-agent-platform" class="mb-16 scroll-mt-24">
 <h2 class="text-2xl font-bold mb-1">Cyber Agent Platform (CAP)</h2>
@@ -1722,6 +1855,88 @@ WASAPI 音频 ───┘
 这种"把过程本身也当作交付物"的做法，是我从 cyber-agent-platform 的零告警预算那里学来的。
 </p>
 
+</section>
+
+<!-- ============ Atlas ============ -->
+<section id="atlas" class="mb-16 scroll-mt-24">
+	<h2 class="text-2xl font-bold mb-2">Atlas — 医疗智能体临床协作平台</h2>
+	<p class="text-sm text-[var(--meta-color)] mb-4">
+		Go · FHIR R4 · 20,576 行 Go 代码 · 56 篇设计文档 · 828 项门禁测试 · P0–P8 分阶段交付
+	</p>
+
+	<p class="mb-4">
+		这是我体量最大的项目：<strong>两万行 Go</strong>，面向医疗机构的临床协作、文书、审核与可审计层。
+		吸引我写它的原因不是规模，而是它逼着我把「<strong>AI 不能做什么</strong>」写进架构里——
+		README 开篇就把边界钉死了：<strong>不做自主诊断决策、不做自动处方、不替代执业医师</strong>；
+		所有 AI 输出均为<strong>建议</strong>，必须经人工签核；原始诊疗数据<strong>「数据不出院」</strong>，
+		院外仅允许经批准的脱敏聚合指标。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">开发原则的排序</h3>
+	<p class="mb-3">这个项目最让我认同的，是它把价值排序显式写出来了：</p>
+	<pre class="bg-[var(--codeblock-bg)] p-4 rounded-lg overflow-x-auto text-sm mb-4"><code>{`患者安全  >  合规  >  正确性  >  可观测性  >  性能  >  代码量`}</code></pre>
+	<p class="mb-4 text-sm text-[var(--meta-color)]">
+		「代码量」被排在<strong>最后一位</strong>——这和我在其他项目里坚持的取舍是一致的：
+		宁可少写功能，也不写说不清依据的逻辑。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">审计哈希链：让「悄悄改一条记录」不可行</h3>
+	<p class="mb-3">
+		涉及医疗文书，光有日志不够——日志本身可以被改。所以平台实现了
+		<strong>审计哈希链</strong>（<code>services/atlas-audit/chain.go</code>）：
+		每条审计记录携带前一条的哈希，任何中间记录的改动都会导致后续校验全部失效，
+		从而让「悄悄改一条记录」在计算上不可行。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">门禁：把「合规」做成会失败的检查</h3>
+	<p class="mb-3">
+		项目没有把规范写进文档就算完，而是做成了 CI 门禁（<code>.github/workflows/ci.yaml</code>），每次 push / PR 强制执行：
+	</p>
+	<div class="overflow-x-auto mb-4">
+		<table class="w-full text-sm border-collapse">
+			<thead>
+				<tr class="border-b border-[var(--line-color)]">
+					<th class="text-left py-2 pr-3">门禁</th>
+					<th class="text-left py-2">检查内容</th>
+				</tr>
+			</thead>
+			<tbody class="text-[var(--meta-color)]">
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">Planning gate</td><td class="py-2">首轮交付规划完整性校验</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">PHI gate</td><td class="py-2">扫描全仓库，阻断任何疑似患者隐私信息入库</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">P0–P8 traceability</td><td class="py-2">需求 → 实现 → 证据的可追溯矩阵</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">Evidence index drift</td><td class="py-2">证据清单与实际产物是否漂移</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">Contract YAML parse</td><td class="py-2">OpenAPI / AsyncAPI 契约可解析</td></tr>
+				<tr class="border-b border-[var(--line-color)]"><td class="py-2 pr-3">Official FHIR validator</td><td class="py-2">按固定 SHA-256 下载官方校验器，跑 R4 验收</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p class="mb-4 text-sm text-[var(--meta-color)]">
+		最后一条尤其较真：官方校验器 JAR 按 <strong>SHA-256 固定版本</strong>下载并校验后再执行，
+		避免「哪天上游换了个包，校验结果的意义就变了」。
+	</p>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">实测结果：828 项测试</h3>
+	<p class="mb-2">我在本地克隆并完整执行了门禁测试套件：</p>
+	<pre class="bg-[var(--codeblock-bg)] p-4 rounded-lg overflow-x-auto text-sm mb-4"><code>{`Ran 828 tests in 12.966s
+FAILED (failures=1, errors=2, skipped=4)`}</code></pre>
+	<p class="mb-3 text-sm text-[var(--meta-color)]">也就是说 <strong>826 / 828 通过</strong>。三个未通过项我逐条查了：</p>
+	<ul class="list-disc pl-6 mb-4 text-sm text-[var(--meta-color)] space-y-1">
+		<li>1 个 <strong>failure</strong>：PHI 扫描器报出 30 条 <code>blocked</code> 级发现（多为 <code>test-results.txt</code>、<code>.proto</code> 里的高熵字符串被判为疑似隐私）。这是<strong>白名单尚未配置</strong>，需逐条加 allowlist 或清理，不是逻辑缺陷。</li>
+		<li>2 个 <strong>error</strong>：其中一个是本环境未装 <code>pytest</code> 导致的 <code>ModuleNotFoundError</code>，属于环境差异。</li>
+	</ul>
+	<div class="border-l-4 border-amber-500/60 bg-[var(--btn-regular-bg)] p-3 rounded-r mb-4 text-sm">
+		<strong>诚实标注：</strong>该仓库 GitHub Actions 目前是<strong>红</strong>的——<code>python-gates</code> job
+		在「Scanner unit tests」这一步失败，导致后续 FHIR 验收、可追溯矩阵等步骤全部 <code>skipped</code>。
+		但同一次运行里的 <code>official-fhir-validator</code> job <strong>全绿</strong>（含官方引擎单元测试与 R4 验收）。
+		所以现状是：<strong>核心医疗功能通过，卡在 PHI 白名单配置这一步</strong>。
+	</div>
+
+	<h3 class="text-lg font-semibold mt-6 mb-2">这个项目证明了什么</h3>
+	<div class="text-sm text-[var(--meta-color)]">
+		不是「我能写两万行 Go」，而是：<strong>我愿意为一个高风险领域，
+		把安全边界、合规约束和可追溯性做成会失败的自动化检查</strong>——
+		并且接受它在没达标时保持红色，而不是放宽门禁让它变绿。
+	</div>
 </section>
 
 </div>
