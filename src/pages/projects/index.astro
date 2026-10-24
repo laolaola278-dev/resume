@@ -2,6 +2,7 @@
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import { url } from "../../utils/url-utils";
 
 // 显式标注 verified 的取值，否则会被推断成 string，
 // 无法用它去索引 badge（badge 的键是固定联合类型）
@@ -469,46 +470,46 @@ npm run screenshots`}</code></pre>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/01-main-interface.png" alt="clihive 主界面：两个真实 PTY 窗格、侧边栏与 Fleet 名单" loading="lazy" />
+<img src={url('/projects/clihive/01-main-interface.png')} alt="clihive 主界面：两个真实 PTY 窗格、侧边栏与 Fleet 名单" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">主界面：两个真实 PTY 窗格 + 侧边栏 + Fleet 名单</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/02-theme-amber.png" alt="clihive 琥珀主题：编排器展开并显示真实投递回执" loading="lazy" />
+<img src={url('/projects/clihive/02-theme-amber.png')} alt="clihive 琥珀主题：编排器展开并显示真实投递回执" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">琥珀石墨主题：编排器展开 + 真实投递回执</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/08-trace-drawer.png" alt="clihive 活动追踪抽屉：真实事件流" loading="lazy" />
+<img src={url('/projects/clihive/08-trace-drawer.png')} alt="clihive 活动追踪抽屉：真实事件流" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">活动追踪抽屉（真实事件流）</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/09-pane-hive-cli.png" alt="窗格内执行 hive whoami 的真实输出" loading="lazy" />
+<img src={url('/projects/clihive/09-pane-hive-cli.png')} alt="窗格内执行 hive whoami 的真实输出" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">窗格内 <code>hive whoami</code> 输出</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/06-collab-panel.png" alt="协作面板：已注册 Agent 与已创建 Run" loading="lazy" />
+<img src={url('/projects/clihive/06-collab-panel.png')} alt="协作面板：已注册 Agent 与已创建 Run" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">协作面板：已注册 Agent + 已创建 Run</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/07-command-palette.png" alt="命令面板（Ctrl+K）" loading="lazy" />
+<img src={url('/projects/clihive/07-command-palette.png')} alt="命令面板（Ctrl+K）" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">命令面板（Ctrl+K）</figcaption>
 </figure>
 </div>
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/03-theme-matrix.png" alt="Matrix 主题" loading="lazy" />
+<img src={url('/projects/clihive/03-theme-matrix.png')} alt="Matrix 主题" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">Matrix 主题</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/04-theme-void.png" alt="Void 主题" loading="lazy" />
+<img src={url('/projects/clihive/04-theme-void.png')} alt="Void 主题" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">Void 主题</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/05-theme-neon.png" alt="Neon 主题" loading="lazy" />
+<img src={url('/projects/clihive/05-theme-neon.png')} alt="Neon 主题" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">Neon 主题</figcaption>
 </figure>
 <figure class="rounded-lg overflow-hidden border border-[var(--line-divider)]">
-<img src="/projects/clihive/10-desktop-app.png" alt="打包后的桌面应用窗口" loading="lazy" />
+<img src={url('/projects/clihive/10-desktop-app.png')} alt="打包后的桌面应用窗口" loading="lazy" />
 <figcaption class="text-xs px-3 py-2">桌面应用（打包 exe）</figcaption>
 </figure>
 </div>
